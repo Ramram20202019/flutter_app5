@@ -135,7 +135,7 @@ class _bookaslot extends State<bookaslot> {
     return GestureDetector(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => choosealocation()));
+            context, MaterialPageRoute(builder: (context) => choosealocation(username: '${widget.username}',)));
         /* _gotoLocation(lat, long);*/
       },
       child: Container(

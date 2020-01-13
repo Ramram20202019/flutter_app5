@@ -1,12 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'slotshow.dart';
 
 
 class choosealocation extends StatefulWidget {
-  String parkname;
-  choosealocation({Key key, this.parkname}) : super (key: key);
+  String username;
+  choosealocation({Key key, this.username}) : super (key: key);
 
   @override
   _choosealocationstate createState() => _choosealocationstate();
@@ -16,7 +19,7 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
 
 
   final DocumentReference documentReference =
-  Firestore.instance.document("ParkingDB/sample");
+  Firestore.instance.collection("ParkingDB").document();
 
   TabController _tabController;
   bool showFab = true;
@@ -35,22 +38,74 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
       return items;
     }
 
+    void _add(i) async{
 
-    void _add(i) {
-      Firestore.instance
-          .collection('ParkingDB')
-          .where("Email", isEqualTo: "abc@gmail.com")
-          .snapshots()
-          .listen((data) =>
-          data.documents.forEach((doc) => ));
-      Map<String, String> data = <String, String>{
-        "Email": "abc@gmail.com",
-        "Slot_no": i
-      };
-      documentReference.setData(data).whenComplete(() {
-        print("Document Added");
-      }).catchError((e) => print(e));
+
+      QuerySnapshot querySnapshot = await Firestore.instance.collection('ParkingDB').where('Email', isEqualTo: '${widget.username}').getDocuments();
+      var doc = querySnapshot.documents;
+
+      if(doc[0]['Slot_no'] != null){
+        print('Inside if');
+        Fluttertoast.showToast(
+            msg: "You have already booked a slot cannot book again",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIos: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) =>
+            slotshow(username: doc[0]['Slot_no'])));
+      }
+      else{
+        Map<String, String> data = <String, String>{
+          "Email": "${widget.username}",
+          "Slot_no": i
+        };
+        documentReference.setData(data).whenComplete(() {
+          print("Document Added");
+        }).catchError((e) => print(e));
+
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) =>
+            slotshow(username: i)));
+      }
+
+
+
+
+       /* var res = await Firestore.instance.collection('ParkingDB')
+            .where("Email", isEqualTo: '${widget.username}');*/
+
+      /*if (res.snapshots() != null) {
+        print('Inside if');
+        Fluttertoast.showToast(
+            msg: "You have already booked a slot cannot book again",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIos: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) =>
+            slotshow(username: '${widget.username}')));
+      }*/
+
+      /*else {
+        Map<String, String> data = <String, String>{
+          "Email": "${widget.username}",
+          "Slot_no": i
+        };
+        documentReference.setData(data).whenComplete(() {
+          print("Document Added");
+        }).catchError((e) => print(e));
+      }*/
     }
+
+
+
 
 
     Widget getlistview() {
@@ -88,18 +143,6 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
                   fontSize: 25,
                   fontWeight: FontWeight.bold),),
               onTap: () {_add(Listitems[index]);
-
-              /*Fluttertoast.showToast(msg: "You have booked the slot\n" + Listitems[index] +
-                  "\n!!!!!",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.CENTER,
-                  timeInSecForIos: 1,
-                  backgroundColor: Colors.green,
-                  textColor: Colors.white,
-                  fontSize: 16.0);
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) =>
-                  slotshow(username: Listitems[index],)));*/
 
               }
 
