@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -18,8 +17,8 @@ class choosealocation extends StatefulWidget {
 class _choosealocationstate extends State<choosealocation> with TickerProviderStateMixin {
 
 
-  final DocumentReference documentReference =
-  Firestore.instance.collection("ParkingDB").document();
+ /* final DocumentReference documentReference =
+  Firestore.instance.collection("ParkingDB").document();*/
 
   TabController _tabController;
   bool showFab = true;
@@ -38,11 +37,14 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
       return items;
     }
 
+
     void _add(i) async{
 
 
       QuerySnapshot querySnapshot = await Firestore.instance.collection('ParkingDB').where('Email', isEqualTo: '${widget.username}').getDocuments();
       var doc = querySnapshot.documents;
+      print(doc[0].documentID);
+      print(doc[0]['Slot_no']);
 
       if(doc[0]['Slot_no'] != null){
         print('Inside if');
@@ -56,20 +58,23 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
             fontSize: 16.0);
         Navigator.push(
             context, MaterialPageRoute(builder: (context) =>
-            slotshow(username: doc[0]['Slot_no'])));
+            slotshow(slotno: doc[0]['Slot_no'])));
       }
       else{
+
+        final DocumentReference documentReference =
+        Firestore.instance.collection("ParkingDB").document(doc[0].documentID);
         Map<String, String> data = <String, String>{
           "Email": "${widget.username}",
           "Slot_no": i
         };
-        documentReference.setData(data).whenComplete(() {
+        documentReference.updateData(data).whenComplete(() {
           print("Document Added");
         }).catchError((e) => print(e));
 
         Navigator.push(
             context, MaterialPageRoute(builder: (context) =>
-            slotshow(username: i)));
+            slotshow(slotno: i)));
       }
 
 

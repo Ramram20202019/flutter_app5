@@ -318,7 +318,7 @@ class _Page2state extends State<Page2> {
                                     letterSpacing: .6)),
                             RaisedButton(
                                 onPressed: () {Navigator.push(
-                                    context, MaterialPageRoute(builder: (context) => slotshow(username: '${widget.username}',)));
+                                    context, MaterialPageRoute(builder: (context) => slotshow(slotno: '${widget.username}',)));
 
                                 },
                                 textColor: Colors.white,

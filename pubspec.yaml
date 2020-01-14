@@ -76,6 +76,10 @@ flutter:
         - asset: assets/Roboto/Roboto-Black.ttf
         - asset: assets/Roboto/Roboto-Bold.ttf
           weight: 700
+
+    - family: Varela
+      fonts:
+        - asset: assets/Varela_Round/VarelaRound-Regular.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
