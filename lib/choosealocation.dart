@@ -74,7 +74,7 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
 
         Navigator.push(
             context, MaterialPageRoute(builder: (context) =>
-            slotshow(slotno: i)));
+            slotshow(slotno: i, username: "${widget.username}" ,)));
       }
 
 
@@ -118,6 +118,7 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
 
       var listView = ListView.separated(
           itemCount: Listitems.length, itemBuilder: (context, index) {
+
         return Container(
 
           child: ListTile(contentPadding: EdgeInsets.only(bottom: 5.0),

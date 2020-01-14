@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class slotshow extends StatefulWidget{
   String slotno;
-  slotshow({Key key, this.slotno}) : super (key: key);
+  String username;
+  slotshow({Key key, this.slotno, this.username}) : super (key: key);
 
   @override
   _slotshow createState() => _slotshow();
@@ -12,9 +13,30 @@ class slotshow extends StatefulWidget{
 class _slotshow extends State<slotshow> {
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
+  }
 
+
+  Future<String> initstate() async {
+      QuerySnapshot querySnapshot = await Firestore.instance.collection(
+        'ParkingDB')
+        .where('Email', isEqualTo: '${widget.username}')
+        .getDocuments();
+    var doc = querySnapshot.documents;
+
+    if (doc[0]['Slot_no'] != null) {
+      await Future.delayed(Duration(seconds: 2));
+      String v = "Hello\t" + doc[0]['Email'] + "\t....You have booked the slot\t" + doc[0]['Slot_no'];
+      return v;
+    }
+
+    else {
+      await Future.delayed(Duration(seconds: 2));
+
+      String v = "Hello\t"+ doc[0]['Email'] + '\t....Please book a slot';
+      return v;
+    }
   }
 
 
@@ -22,7 +44,6 @@ class _slotshow extends State<slotshow> {
 
 
   @override
-
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
@@ -45,11 +66,14 @@ class _slotshow extends State<slotshow> {
 
 
         body:
-        Container(padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-          height: 150.0,
+        Container(padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 150.0),
+          height: MediaQuery
+              .of(context)
+              .size
+              .height-320.0,
           decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(60.0),
+              borderRadius: BorderRadius.circular(80.0),
               boxShadow: [
                 BoxShadow(
                     color: Colors.black87,
@@ -59,10 +83,18 @@ class _slotshow extends State<slotshow> {
               ]
 
           ),
-          child: Text('Your Booked slot is ${widget.slotno}'  , style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30, fontFamily: 'Roboto'),textAlign: TextAlign.center,),
-        ),
-      ),
+          child:  FutureBuilder<String>(
+              future: initstate(),
+              initialData: "Please Wait Loading......",
+              builder: (context, snapshot) {
+
+                return new Text(snapshot.data.toString(), style: TextStyle(fontFamily: 'Roboto', fontSize: 25.0, fontWeight: FontWeight.bold),);
+
+             })
+              )
+      )
     );
+
   }
 
 
