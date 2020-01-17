@@ -59,7 +59,7 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
             fontSize: 16.0);
         Navigator.push(
             context, MaterialPageRoute(builder: (context) =>
-            slotshow(slotno: doc[0]['Slot_no'])));
+            slotshow(username: doc[0]['Email'],)));
       }
       else{
 
