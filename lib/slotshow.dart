@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'main.dart';
@@ -70,63 +71,67 @@ Future<String> initstate() async {
 
 
         body:
-        Container(padding: EdgeInsets.only(top: 150.0),
-          height: MediaQuery
-              .of(context)
-              .size
-              .height-320.0,
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(80.0),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black87,
-                    offset: Offset(0.0, 0.0),
-                    blurRadius: 25.0
-                )
-              ]
+        Center(
+          child: Container(padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 10.0),
+            height: 500.0,
 
-          ),
-          child:  Column(
-            children: <Widget>[
-              Container(
-                 child: FutureBuilder<String>(
-                  future: initstate(),
-                  initialData: "Please Wait Loading......",
-                  builder: (context, snapshot) {
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(80.0)),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black87,
+                      offset: Offset(0.0, 0.0),
+                      blurRadius: 25.0
+                  )
+                ]
 
-                    return new Text(snapshot.data.toString(), style: TextStyle(fontFamily: 'Roboto', fontSize: 25.0, fontWeight: FontWeight.bold),);
-                 }),
             ),
+            child:  Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(padding: EdgeInsets.only(top: 50.0),
+                     child: FutureBuilder<String>(
+                      future: initstate(),
+                      initialData: "Please Wait Loading......",
+                      builder: (context, snapshot) {
 
-              Container(padding: EdgeInsets.only(top: 50.0, right: 50.0),
-                  child: RaisedButton(
-                      onPressed: () {
-                        checkdata();
-                      },
-                      textColor: Colors.white,
-                      splashColor: Colors.grey,
-                      padding: const EdgeInsets.all(0.0),
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: <Color>[
-                              Color(0xFFFF9861),
-                              Color(0xFF42A5F5),
-                            ],
-                          ),
-                        ),
-                        padding: const EdgeInsets.all(10.0),
-                        child: const Text(
-                            'CANCEL BOOKING',
-                            style: TextStyle(fontSize: 20,
-                                fontFamily: 'Pacifico')
-                        ),
+                        return new Text(snapshot.data.toString(), style: TextStyle(fontFamily: 'Roboto', fontSize: 25.0, fontWeight: FontWeight.bold),);
+                     }),
+                ),
+
+                  Container(padding: EdgeInsets.only(top: 50.0, right: 50.0),
+                      child: RaisedButton(
+                          onPressed: () {
+                            checkdata();
+                          },
+                          textColor: Colors.white,
+                          splashColor: Colors.grey,
+                          padding: const EdgeInsets.all(0.0),
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: <Color>[
+                                  Color(0xFFFF9861),
+                                  Color(0xFF42A5F5),
+                                ],
+                              ),
+                            ),
+                            padding: const EdgeInsets.all(10.0),
+                            child: const Text(
+                                'CANCEL BOOKING',
+                                style: TextStyle(fontSize: 20,
+                                    fontFamily: 'Pacifico')
+                            ),
+                          )
                       )
                   )
-              )
-          ])
-              )
+              ]),
+            )
+                ),
+        )
       )
     );
 
