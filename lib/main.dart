@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:async';
 import 'slotshow.dart';
 import 'bookaslot.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 
@@ -317,9 +318,12 @@ class _Page2state extends State<Page2> {
                                     fontWeight: FontWeight.bold,
                                     letterSpacing: .6)),
                             RaisedButton(
-                                onPressed: () {Navigator.push(
-                                    context, MaterialPageRoute(builder: (context) => slotshow(username: '${widget.username}',)));
-
+                                onPressed: () {
+                                  Navigator.push(
+                                      context, MaterialPageRoute(
+                                      builder: (context) =>
+                                          slotshow(
+                                            username: '${widget.username}',)));
                                 },
                                 textColor: Colors.white,
                                 splashColor: Colors.grey,
@@ -346,8 +350,8 @@ class _Page2state extends State<Page2> {
                                 )
                             ),
                             RaisedButton(
-                                onPressed: () {Navigator.push(
-                                    context, MaterialPageRoute(builder: (context) => bookaslot(username: '${widget.username}',)));
+                                onPressed: () {
+                                  checkuser();
 
                                 },
                                 textColor: Colors.white,
@@ -385,6 +389,37 @@ class _Page2state extends State<Page2> {
     );
   }
 
+  Future<void> checkuser() async {
+    QuerySnapshot querySnapshot = await Firestore.instance.collection(
+        'ParkingDB')
+        .where('Email', isEqualTo: '${widget.username}')
+        .getDocuments();
+    var doc = querySnapshot.documents;
+    print(doc[0].documentID);
+    print(doc[0]['Slot_no']);
+
+
+    if (doc[0]['Slot_no'] != null) {
+      print('Inside if');
+      Fluttertoast.showToast(
+          msg: "You have already booked a slot cannot book again. Please cancel the slot you have booked for booking again",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIos: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) =>
+          slotshow(username: doc[0]['Email'],)));
+    }
+
+    else{
+      Navigator.push(
+          context, MaterialPageRoute(
+          builder: (context) => bookaslot(username: '${widget.username}',)));
+    }
+  }
 }
 
 

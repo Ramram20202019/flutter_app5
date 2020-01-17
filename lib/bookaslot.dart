@@ -207,7 +207,7 @@ class _bookaslot extends State<bookaslot> {
         ),
         SizedBox(height: 5.0),
         Container(
-            child: Row(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 Container(

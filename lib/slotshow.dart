@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'main.dart';
 class slotshow extends StatefulWidget{
   String slotno;
   String username;
@@ -54,7 +54,7 @@ class _slotshow extends State<slotshow> {
           IconButton(
             icon: Icon(Icons.arrow_back_ios),
 
-            onPressed: () { Navigator.pop(context);
+            onPressed: () { Navigator.push(context, MaterialPageRoute(builder: (context) => Page2(username: '${widget.username}',)));
 
             },
           ),
