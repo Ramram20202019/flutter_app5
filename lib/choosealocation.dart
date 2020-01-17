@@ -47,6 +47,9 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
       print(doc[0]['Slot_no']);
 
 
+
+
+
       if(doc[0]['Slot_no'] != null){
         print('Inside if');
         Fluttertoast.showToast(
@@ -63,51 +66,55 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
       }
       else{
 
-        final DocumentReference documentReference =
-        Firestore.instance.collection("ParkingDB").document(doc[0].documentID);
-        Map<String, String> data = <String, String>{
-          "Email": "${widget.username}",
-          "Slot_no": i
-        };
-        documentReference.updateData(data).whenComplete(() {
-          print("Document Added");
-        }).catchError((e) => print(e));
 
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) =>
-            slotshow(slotno: i, username: "${widget.username}" ,)));
+        Future<bool> ret() async{
+          QuerySnapshot q = await Firestore.instance.collection('ParkingDB')
+              .where('Slot_no', isGreaterThan: '')
+              .getDocuments();
+          bool i1 = false;
+          var d = q.documents;
+          for (int j = 0; j < q.documents.length; j++) {
+            if(i == d[j]['Slot_no']){
+              i = true;
+            }
+          }
+          return i1;
+        }
+
+          Future<bool> j = ret();
+          if(j == false) {
+            final DocumentReference documentReference =
+            Firestore.instance.collection("ParkingDB").document(
+                doc[0].documentID);
+            Map<String, String> data = <String, String>{
+              "Email": "${widget.username}",
+              "Slot_no": i
+            };
+            documentReference.updateData(data).whenComplete(() {
+              print("Document Added");
+            }).catchError((e) => print(e));
+
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) =>
+                slotshow(slotno: i, username: "${widget.username}",)));
+          }
+          else{
+            Fluttertoast.showToast(
+                msg: "This Slot has already been booked. Please choose another slot",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIos: 1,
+                backgroundColor: Colors.red,
+                textColor: Colors.white,
+                fontSize: 16.0);
+          }
+
       }
 
 
 
 
-       /* var res = await Firestore.instance.collection('ParkingDB')
-            .where("Email", isEqualTo: '${widget.username}');*/
 
-      /*if (res.snapshots() != null) {
-        print('Inside if');
-        Fluttertoast.showToast(
-            msg: "You have already booked a slot cannot book again",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIos: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0);
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) =>
-            slotshow(username: '${widget.username}')));
-      }*/
-
-      /*else {
-        Map<String, String> data = <String, String>{
-          "Email": "${widget.username}",
-          "Slot_no": i
-        };
-        documentReference.setData(data).whenComplete(() {
-          print("Document Added");
-        }).catchError((e) => print(e));
-      }*/
     }
 
 
