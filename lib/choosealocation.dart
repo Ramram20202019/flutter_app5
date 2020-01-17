@@ -74,31 +74,15 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
           bool i1 = false;
           var d = q.documents;
           for (int j = 0; j < q.documents.length; j++) {
-            if(i == d[j]['Slot_no']){
-              i = true;
+            if(i.toString() == d[j]['Slot_no'].toString()){
+              i1 = true;
             }
           }
           return i1;
         }
 
-          Future<bool> j = ret();
-          if(j == false) {
-            final DocumentReference documentReference =
-            Firestore.instance.collection("ParkingDB").document(
-                doc[0].documentID);
-            Map<String, String> data = <String, String>{
-              "Email": "${widget.username}",
-              "Slot_no": i
-            };
-            documentReference.updateData(data).whenComplete(() {
-              print("Document Added");
-            }).catchError((e) => print(e));
-
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) =>
-                slotshow(slotno: i, username: "${widget.username}",)));
-          }
-          else{
+          bool j = await ret();
+          if(j) {
             Fluttertoast.showToast(
                 msg: "This Slot has already been booked. Please choose another slot",
                 toastLength: Toast.LENGTH_SHORT,
@@ -107,12 +91,27 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
                 backgroundColor: Colors.red,
                 textColor: Colors.white,
                 fontSize: 16.0);
+
           }
 
+          else{
+            final DocumentReference documentReference =
+            Firestore.instance.collection("ParkingDB").document(
+            doc[0].documentID);
+            Map<String, String> data = <String, String>{
+            "Email": "${widget.username}",
+            "Slot_no": i
+            };
+            documentReference.updateData(data).whenComplete(() {
+            print("Document Added");
+            }).catchError((e) => print(e));
+
+          Navigator.push(
+           context, MaterialPageRoute(builder: (context) =>
+            slotshow(slotno: i, username: "${widget.username}",)));
       }
 
-
-
+      }
 
 
     }
