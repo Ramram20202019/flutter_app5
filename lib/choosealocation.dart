@@ -46,6 +46,7 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
       print(doc[0].documentID);
       print(doc[0]['Slot_no']);
 
+
       if(doc[0]['Slot_no'] != null){
         print('Inside if');
         Fluttertoast.showToast(

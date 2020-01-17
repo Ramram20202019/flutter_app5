@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'choosealocation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 
@@ -179,6 +180,16 @@ class _bookaslot extends State<bookaslot> {
           bearing: 45.0,)));
   }
 
+  Future<String> getslot() async {
+    QuerySnapshot q = await Firestore.instance.collection('ParkingDB').where('Slot_no', isGreaterThan: '').getDocuments();
+    int t = 20;
+    int s = 20 - q.documents.length;
+    String v = s.toString() + '/' + t.toString();
+    return v;
+
+  }
+
+
 
   Widget myDetailsContainer1(String ParkName) {
     return Column(
@@ -201,55 +212,23 @@ class _bookaslot extends State<bookaslot> {
               children: <Widget>[
                 Container(
                     child: Text(
-                      "4.1",
+                      "Slots Available",
                       style: TextStyle(
                         color: Colors.black54,
-                        fontSize: 18.0,
+                        fontSize: 30.0, fontWeight: FontWeight.bold, fontFamily: 'Roboto'
                       ),
                     )),
                 Container(
-                  child: Icon(
-                    Icons.star,
-                    color: Colors.amber,
-                    size: 15.0,
+                  child: FutureBuilder<String>(
+                        future: getslot(),
+                        initialData: "Please Wait Loading......",
+                        builder: (context, snapshot) {
+                          return new Text(snapshot.data.toString(), style: TextStyle(
+                          fontFamily: 'Roboto', fontSize: 30.0, fontWeight: FontWeight.bold),);
+                        }
                   ),
                 ),
-                Container(
-                  child: Icon(
-                    Icons.star,
-                    color: Colors.amber,
-                    size: 15.0,
-                  ),
-                ),
-                Container(
-                  child: Icon(
-                    Icons.star,
-                    color: Colors.amber,
-                    size: 15.0,
-                  ),
-                ),
-                Container(
-                  child: Icon(
-                    Icons.star,
-                    color: Colors.amber,
-                    size: 15.0,
-                  ),
-                ),
-                Container(
-                  child: Icon(
-                    Icons.star_half,
-                    color: Colors.amber,
-                    size: 15.0,
-                  ),
-                ),
-                Container(
-                    child: Text(
-                      "(946)",
-                      style: TextStyle(
-                        color: Colors.black54,
-                        fontSize: 18.0,
-                      ),
-                    )),
+
               ],
             )),
 
