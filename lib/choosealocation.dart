@@ -48,6 +48,12 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
 
 
 
+        /* Firestore.instance.collection("ParkingDB").document().setData({'Email': '1234@gmail.com'});*/
+
+
+
+
+
 
 
       if(doc[0]['Slot_no'] != null){

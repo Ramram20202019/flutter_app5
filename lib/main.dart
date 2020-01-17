@@ -206,7 +206,25 @@ class _Myhomepagestate extends State<MyHomePage> {
       _formKey.currentState.save();
       try {
         await FirebaseAuth.instance.signInWithEmailAndPassword(email: un, password: pw);
+        Future<bool> ret() async{
+          QuerySnapshot q = await Firestore.instance.collection('ParkingDB')
+              .where('Email', isGreaterThan: '')
+              .getDocuments();
+          bool i1 = false;
+          var d = q.documents;
+          for (int j = 0; j < q.documents.length; j++) {
+            if(un == d[j]['Email'].toString()){
+              i1 = true;
+            }
+          }
+          return i1;
+        }
 
+        bool j = await ret();
+        if(!j){
+          Firestore.instance.collection("ParkingDB").document().setData({'Email': un});
+          print('User added to the database');
+        }
         Navigator.push(context, MaterialPageRoute(builder: (context) => Page2(username: un,)));
       } catch (e) {
         Fluttertoast.showToast(
