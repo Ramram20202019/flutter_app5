@@ -247,7 +247,8 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
           backgroundColor: Colors.green,
           textColor: Colors.white,
           fontSize: 16.0);
-      Navigator.push(
+      Navigator.of(context).popUntil((route) => route.isFirst);
+      Navigator.pushReplacement(
           context, MaterialPageRoute(
           builder: (context) => MyHomePage()));
     }

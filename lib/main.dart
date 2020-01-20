@@ -7,6 +7,7 @@ import 'dart:async';
 import 'slotshow.dart';
 import 'bookaslot.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 
 
 
@@ -32,13 +33,41 @@ class MyHomePage extends StatefulWidget{
   _Myhomepagestate createState() => _Myhomepagestate();
 }
 
-class _Myhomepagestate extends State<MyHomePage> {
+class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
 
   /*Parking parking = new Parking();
   String username, pwd;*/
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String un;
   String pw;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print("APP_STATE: $state");
+
+    if(state == AppLifecycleState.resumed){
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(
+          builder: (context) => MyHomePage()));
+    }else if(state == AppLifecycleState.inactive){
+      // app is inactive
+    }else if(state == AppLifecycleState.paused){
+      // user quit our app temporally
+    }
+  }
+
 
   var _u = new TextEditingController();
   var _p = new TextEditingController();
@@ -260,6 +289,8 @@ class Page2 extends StatefulWidget{
 class _Page2state extends State<Page2> {
 
 
+
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -455,7 +486,8 @@ class _Page2state extends State<Page2> {
        backgroundColor: Colors.green,
        textColor: Colors.white,
        fontSize: 16.0);
-    Navigator.push(
+   Navigator.of(context).popUntil((route) => route.isFirst);
+   Navigator.pushReplacement(
        context, MaterialPageRoute(
        builder: (context) => MyHomePage()));
  }
