@@ -14,7 +14,34 @@ class choosealocation extends StatefulWidget {
   _choosealocationstate createState() => _choosealocationstate();
 }
 
-class _choosealocationstate extends State<choosealocation> with TickerProviderStateMixin {
+class _choosealocationstate extends State<choosealocation> with TickerProviderStateMixin, WidgetsBindingObserver {
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print("APP_STATE: $state");
+
+    if(state == AppLifecycleState.resumed){
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(
+          builder: (context) => MyHomePage()));
+    }else if(state == AppLifecycleState.inactive){
+      // app is inactive
+    }else if(state == AppLifecycleState.paused){
+      // user quit our app temporally
+    }
+  }
 
 
  /* final DocumentReference documentReference =
@@ -23,10 +50,7 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
   TabController _tabController;
   bool showFab = true;
 
-  @override
-  void initState() {
-    super.initState();
-  }
+
 
 
   @override

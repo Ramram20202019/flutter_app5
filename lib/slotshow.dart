@@ -17,13 +17,34 @@ class slotshow extends StatefulWidget{
   _slotshow createState() => _slotshow();
 }
 
-class _slotshow extends State<slotshow> {
+class _slotshow extends State<slotshow> with WidgetsBindingObserver{
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
   }
 
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print("APP_STATE: $state");
+
+    if(state == AppLifecycleState.resumed){
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(
+          builder: (context) => MyHomePage()));
+    }else if(state == AppLifecycleState.inactive){
+      // app is inactive
+    }else if(state == AppLifecycleState.paused){
+      // user quit our app temporally
+    }
+  }
 
 Future<String> initstate() async {
       QuerySnapshot querySnapshot = await Firestore.instance.collection(

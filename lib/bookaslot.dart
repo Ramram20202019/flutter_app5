@@ -21,7 +21,35 @@ class bookaslot extends StatefulWidget{
 }
 
 
-class _bookaslot extends State<bookaslot> {
+class _bookaslot extends State<bookaslot> with WidgetsBindingObserver {
+
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print("APP_STATE: $state");
+
+    if(state == AppLifecycleState.resumed){
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(
+          builder: (context) => MyHomePage()));
+    }else if(state == AppLifecycleState.inactive){
+      // app is inactive
+    }else if(state == AppLifecycleState.paused){
+      // user quit our app temporally
+    }
+  }
   Completer<GoogleMapController> _controller = Completer();
   final LatLng _center = const LatLng(45.521563, -122.677433);
 
