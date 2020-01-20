@@ -135,9 +135,16 @@ class _bookaslot extends State<bookaslot> {
   Widget _boxes(String _image, double lat, double long, String ParkName) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => choosealocation(username: '${widget.username}',)));
-        /* _gotoLocation(lat, long);*/
+        switch(ParkName) {
+          case 'Ascendas IT Park, Taramani':
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) =>
+                choosealocation(username: '${widget.username}',)));
+            break;
+          case 'Tidel Park, Chennai':
+
+        };
+
       },
       child: Container(
         child: new FittedBox(
@@ -192,48 +199,89 @@ class _bookaslot extends State<bookaslot> {
 
 
   Widget myDetailsContainer1(String ParkName) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: Container(
-              child: Text(ParkName,
-                style: TextStyle(
-                    color: Color(0xff6200ee),
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold),
-              )),
-        ),
-        SizedBox(height: 5.0),
-        Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Container(
-                    child: Text(
-                      "Slots Available",
-                      style: TextStyle(
-                        color: Colors.black54,
-                        fontSize: 30.0, fontWeight: FontWeight.bold, fontFamily: 'Roboto'
+    switch(ParkName) {
+      case 'Ascendas IT Park, Taramani':
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Container(
+                  child: Text(ParkName,
+                    style: TextStyle(
+                        color: Color(0xff6200ee),
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.bold),
+                  )),
+            ),
+            SizedBox(height: 5.0),
+            Container(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Container(
+                        child: Text(
+                          "Slots Available",
+                          style: TextStyle(
+                              color: Colors.black54,
+                              fontSize: 30.0,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Roboto'
+                          ),
+                        )),
+                    Container(
+                      child: FutureBuilder<String>(
+                          future: getslot(),
+                          initialData: "Please Wait Loading......",
+                          builder: (context, snapshot) {
+                            return new Text(
+                              snapshot.data.toString(), style: TextStyle(
+                                fontFamily: 'Roboto',
+                                fontSize: 30.0,
+                                fontWeight: FontWeight.bold),);
+                          }
                       ),
-                    )),
-                Container(
-                  child: FutureBuilder<String>(
-                        future: getslot(),
-                        initialData: "Please Wait Loading......",
-                        builder: (context, snapshot) {
-                          return new Text(snapshot.data.toString(), style: TextStyle(
-                          fontFamily: 'Roboto', fontSize: 30.0, fontWeight: FontWeight.bold),);
-                        }
-                  ),
-                ),
+                    ),
 
-              ],
-            )),
+                  ],
+                )),
 
-      ],
-    );
+          ],
+        ); break;
+      case 'Tidel Park, Chennai':
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Container(
+                  child: Text(ParkName,
+                    style: TextStyle(
+                        color: Color(0xff6200ee),
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.bold),
+                  )),
+            ),
+            SizedBox(height: 5.0),
+
+                    Container(
+                        child: Text(
+                          "Coming Soon",
+                          style: TextStyle(
+                              color: Colors.black54,
+                              fontSize: 30.0,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Roboto'
+                          ),
+                        )),
+
+
+
+
+    ]
+        );
+
+    };
   }
 
 

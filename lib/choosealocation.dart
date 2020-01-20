@@ -192,7 +192,9 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
       ),
       Container(
         child: Scaffold(
-          /* body: grid(),*/
+          body: Container(padding: EdgeInsets.only(left: 100.0, top: 250.0),
+            child: new Text("Coming Soon", textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Roboto', fontWeight: FontWeight.bold, fontSize: 40.0),),
+          ), 
         ),
       ),
 
