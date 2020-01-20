@@ -1,3 +1,5 @@
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -64,7 +66,11 @@ Future<String> initstate() async {
             },
           ),
 
-          title: Text('Your Bookings', textAlign: TextAlign.center,),
+           title: Text('Your Bookings', style: TextStyle(fontFamily: 'Roboto', fontSize: 22.0),),
+           actions: <Widget>[
+            Container(padding: EdgeInsets.only(top: 15.0),child:  Text('Logout',  style: TextStyle(fontFamily: 'Roboto', fontSize: 22.0),)),
+            new IconButton(icon: Icon(Icons.account_box, color: Color(0xFFFFFFFF), size: 35.0,), onPressed: (){_signout();}),
+          ],
 
           backgroundColor: Color(0xFFFF9861),
         ),
@@ -169,6 +175,27 @@ Future<String> initstate() async {
       Navigator.push(context, MaterialPageRoute(builder: (context) => Page2(username: '${widget.username}',)));
     }
 
+
+  }
+
+  _signout() async{
+    try{
+      await FirebaseAuth.instance.signOut();
+      Fluttertoast.showToast(
+
+          msg: "Loggedout Succesfully",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIos: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      Navigator.push(
+          context, MaterialPageRoute(
+          builder: (context) => MyHomePage()));
+    }
+    catch(e){
+      print(e.message);}
 
   }
 

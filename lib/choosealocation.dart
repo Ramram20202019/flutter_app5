@@ -1,8 +1,8 @@
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'main.dart';
 import 'slotshow.dart';
 
 
@@ -122,11 +122,7 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
 
     }
 
-
-
-
-
-    Widget getlistview() {
+   Widget getlistview() {
       var Listitems = getListelements();
 
       var listView = ListView.separated(
@@ -215,6 +211,10 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
           ),
 
           title: Text('Choose a Slot', textAlign: TextAlign.center,),
+          actions: <Widget>[
+            Container(padding: EdgeInsets.only(top: 15.0),child:  Text('Logout',  style: TextStyle(fontFamily: 'Roboto', fontSize: 22.0),)),
+            new IconButton(icon: Icon(Icons.account_box, color: Color(0xFFFFFFFF), size: 35.0,), onPressed: (){_signout();}),
+          ],
           elevation: 0.7,
           backgroundColor: Color(0xFFFF9861),
           bottom: TabBar(
@@ -235,7 +235,26 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
       ),
     );
   }
+  _signout() async{
+    try{
+      await FirebaseAuth.instance.signOut();
+      Fluttertoast.showToast(
 
+          msg: "Loggedout Succesfully",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIos: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      Navigator.push(
+          context, MaterialPageRoute(
+          builder: (context) => MyHomePage()));
+    }
+    catch(e){
+      print(e.message);}
+
+  }
 
 }
 

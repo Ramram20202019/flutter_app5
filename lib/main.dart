@@ -1,5 +1,6 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:async';
@@ -248,8 +249,6 @@ class _Myhomepagestate extends State<MyHomePage> {
 
 
 
-
-
 class Page2 extends StatefulWidget{
   String username;
   Page2({Key key, this.username}) : super (key: key);
@@ -265,19 +264,26 @@ class _Page2state extends State<Page2> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(backgroundColor: Color(0xFFFF9861),
+        appBar: AppBar(
+          backgroundColor: Color(0xFFFF9861),
+
+          leading:
+          IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+
+              onPressed: () { Navigator.pop(context);
+
+             },
+            ),
+          actions: <Widget>[
+            Container(padding: EdgeInsets.only(top: 17.0),child: new Text('Logout',  style: TextStyle(fontFamily: 'Roboto', fontSize: 22.0),)),
+            new IconButton(icon: Icon(Icons.account_box, color: Color(0xFFFFFFFF), size: 35.0,), onPressed: (){_signout();})
+          ],
+
+        ),
         body: ListView(
             children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(top: 15.0, left: 10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    IconButton(icon: Icon(Icons.arrow_back_ios),
-                        disabledColor: Colors.white,
-                        onPressed: null),
-                  ],
-                ),
-              ),
+
 
               SizedBox(height: 25.0),
               Padding(
@@ -395,8 +401,6 @@ class _Page2state extends State<Page2> {
                                   ),
                                 )
                             )
-
-
                           ]
                       )
                   )
@@ -438,7 +442,32 @@ class _Page2state extends State<Page2> {
           builder: (context) => bookaslot(username: '${widget.username}',)));
     }
   }
+
+   _signout() async{
+ try{
+   await FirebaseAuth.instance.signOut();
+   Fluttertoast.showToast(
+
+       msg: "Loggedout Succesfully",
+       toastLength: Toast.LENGTH_SHORT,
+       gravity: ToastGravity.CENTER,
+       timeInSecForIos: 1,
+       backgroundColor: Colors.green,
+       textColor: Colors.white,
+       fontSize: 16.0);
+    Navigator.push(
+       context, MaterialPageRoute(
+       builder: (context) => MyHomePage()));
+ }
+catch(e){
+   print(e.message);}
+
+  }
 }
+
+
+
+
 
 
 

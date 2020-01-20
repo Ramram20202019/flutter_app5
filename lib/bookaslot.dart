@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
+import 'main.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'choosealocation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -44,6 +47,10 @@ class _bookaslot extends State<bookaslot> {
         ),
 
           title: Text('Choose a Location', textAlign: TextAlign.center,),
+          actions: <Widget>[
+            Container(padding: EdgeInsets.only(top: 15.0),child:  Text('Logout',  style: TextStyle(fontFamily: 'Roboto', fontSize: 22.0),)),
+            new IconButton(icon: Icon(Icons.account_box, color: Color(0xFFFFFFFF), size: 35.0,), onPressed: (){_signout();}),
+          ],
           backgroundColor: Color(0xFFFF9861),
         ),
         body: Stack(
@@ -274,16 +281,31 @@ class _bookaslot extends State<bookaslot> {
                               fontFamily: 'Roboto'
                           ),
                         )),
-
-
-
-
-    ]
+          ]
         );
 
-    };
+    }
   }
+  _signout() async{
+    try{
+      await FirebaseAuth.instance.signOut();
+      Fluttertoast.showToast(
 
+          msg: "Loggedout Succesfully",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIos: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      Navigator.push(
+          context, MaterialPageRoute(
+          builder: (context) => MyHomePage()));
+    }
+    catch(e){
+      print(e.message);}
+
+  }
 
 
 
