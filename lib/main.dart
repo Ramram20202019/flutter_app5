@@ -43,6 +43,7 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
 
   @override
   void initState() {
+
     super.initState();
     WidgetsBinding.instance.addObserver(this);
   }

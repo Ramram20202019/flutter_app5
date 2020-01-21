@@ -55,6 +55,7 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+
     List<String> getListelements() {
       var items = List<String>.generate(
           20, (counter) => "P1 - A${counter + 1}");
@@ -62,23 +63,15 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
     }
 
 
-    void _add(i) async{
 
+    void _add(i) async{
 
       QuerySnapshot querySnapshot = await Firestore.instance.collection('ParkingDB').where('Email', isEqualTo: '${widget.username}').getDocuments();
       var doc = querySnapshot.documents;
       print(doc[0].documentID);
       print(doc[0]['Slot_no']);
 
-
-
-        /* Firestore.instance.collection("ParkingDB").document().setData({'Email': '1234@gmail.com'});*/
-
-
-
-
-
-
+             /* Firestore.instance.collection("ParkingDB").document().setData({'Email': '1234@gmail.com'});*/
 
       if(doc[0]['Slot_no'] != null){
         print('Inside if');
@@ -144,61 +137,76 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
       }
 
 
+
     }
 
-   Widget getlistview() {
-      var Listitems = getListelements();
-
-      var listView = ListView.separated(
-          itemCount: Listitems.length, itemBuilder: (context, index) {
-
-        return Container(
-
-          child: ListTile(contentPadding: EdgeInsets.only(bottom: 5.0),
-              trailing: new RawMaterialButton(
-                onPressed: () {},
-                child: new Icon(
-                  Icons.local_parking,
-                  color: Colors.green,
-                  size: 45.0,
-                ),
-
-              ),
-              leading: new RawMaterialButton(
-                onPressed: () {},
-                child: new Icon(
-                  Icons.directions_car,
-                  color: Colors.blue,
-                  size: 45.0,
-                ),
-                shape: new CircleBorder(),
-                elevation: 2.0,
-                fillColor: Colors.white,
-                padding: const EdgeInsets.all(5.0),
-              ),
-
-              title: Text(Listitems[index], style: TextStyle(
-                  fontFamily: 'Roboto',
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold),),
-              onTap: () {_add(Listitems[index]);
-
-              }
 
 
-          ),
-        );
-      },
-          separatorBuilder: (context, index) {
-            return Divider();
-          }
 
 
-      );
+    Widget getlistview() {
+       var Listitems = getListelements();
 
 
-      return listView;
-    }
+       var listView = ListView.separated(
+           itemCount: Listitems.length, itemBuilder: (context, index) {
+
+
+         return Container(
+
+           child: ListTile(contentPadding: EdgeInsets.only(bottom: 5.0),
+
+
+               trailing: new RawMaterialButton(
+                 onPressed: () {},
+                 child: new Icon(
+                   Icons.local_parking,
+                   color: Colors.green,
+                   size: 45.0,
+                 ),
+
+               ),
+               leading: new RawMaterialButton(
+                 onPressed: () {},
+                 child: new Icon(
+                   Icons.directions_car,
+                   color: Colors.blue,
+                   size: 45.0,
+                 ),
+                 shape: new CircleBorder(),
+                 elevation: 2.0,
+                 fillColor: Colors.white,
+                 padding: const EdgeInsets.all(5.0),
+               ),
+
+               title: Text(Listitems[index], style: TextStyle(
+                   fontFamily: 'Roboto',
+                   fontSize: 25,
+                   fontWeight: FontWeight.bold),),
+               onTap: () {
+                 _add(Listitems[index]);
+               }
+
+
+           ),
+         );
+       },
+           separatorBuilder: (context, index) {
+             return Divider();
+           }
+
+
+       );
+
+
+       return listView;
+
+
+   }
+
+
+
+
 
 
     List<Widget> containers = [
@@ -206,15 +214,16 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
         child: Container(
 
             child: Scaffold(
-              body: getlistview(),
+              body:  getlistview(),
+              )
             )
         ),
-      ),
+
       Container(
         child: Scaffold(
           body: Container(padding: EdgeInsets.only(left: 100.0, top: 250.0),
             child: new Text("Coming Soon", textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Roboto', fontWeight: FontWeight.bold, fontSize: 40.0),),
-          ), 
+          ),
         ),
       ),
 
@@ -280,6 +289,11 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
       print(e.message);}
 
   }
+
+
+
+
+
 
 }
 
