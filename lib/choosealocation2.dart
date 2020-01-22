@@ -1,3 +1,4 @@
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -6,15 +7,15 @@ import 'main.dart';
 import 'slotshow.dart';
 
 
-class choosealocation extends StatefulWidget {
+class choosealocation2 extends StatefulWidget {
   String username;
-  choosealocation({Key key, this.username}) : super (key: key);
+  choosealocation2({Key key, this.username}) : super (key: key);
 
   @override
-  _choosealocationstate createState() => _choosealocationstate();
+  _choosealocation2state createState() => _choosealocation2state();
 }
 
-class _choosealocationstate extends State<choosealocation> with TickerProviderStateMixin, WidgetsBindingObserver {
+class _choosealocation2state extends State<choosealocation2> with TickerProviderStateMixin, WidgetsBindingObserver {
 
   @override
   void initState() {
@@ -44,9 +45,6 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
   }
 
 
- /* final DocumentReference documentReference =
-  Firestore.instance.collection("ParkingDB").document();*/
-
   TabController _tabController;
   bool showFab = true;
 
@@ -56,20 +54,56 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
   @override
   Widget build(BuildContext context) {
 
-    List<String> getListelements() {
-      var items = List<String>.generate(
-          20, (counter) => "P1 - A${counter + 1}");
-      return items;
+
+
+    Future getdata () async {
+
+      List<String> l = new List<String>();
+       await Firestore.instance
+          .collection('ParkingDB').orderBy("Slot_no")
+          .where("Slot_no", isGreaterThan: "")
+      .getDocuments().then((QuerySnapshot s) {
+        print(s.documents.toString());
+       l.add(s.documents.toString());
+       print(l);
+      });
+
+       print(l);
+       
+      QuerySnapshot q = await Firestore.instance.collection('ParkingDB')
+          .where('Slot_no', isGreaterThan: '').getDocuments();
+      var d = q.documents;
+      QuerySnapshot q1 = await Firestore.instance.collection('Slots').getDocuments();
+      var d1 = q1.documents;
+
+
+     /* QuerySnapshot q2 = await Firestore.instance.collection('Empty_Slot').getDocuments();
+      for(int j = 0; j < q.documents.length; j++){
+        for(int k =0; k < q1.documents.length; k++){
+          if(d[j]['Slot_no'] != d1[k]['Slot_no']){
+
+            var d2 = q2.documents;
+            for(int m =0; m < q2.documents.length; m++){
+              if(d1[k]['Slot_no'] == d2[m]['Slot_no']){break;}
+              else{ DocumentReference ref =  await Firestore.instance.collection('Empty_Slot').add({'Slot_no': d1[k]['Slot_no']});}
+            }
+          }
+        }
+      }*/
+
+
+      return q1.documents;
     }
 
 
-
     void _add(i) async{
+
 
       QuerySnapshot querySnapshot = await Firestore.instance.collection('ParkingDB').where('Email', isEqualTo: '${widget.username}').getDocuments();
       var doc = querySnapshot.documents;
       print(doc[0].documentID);
       print(doc[0]['Slot_no']);
+
 
 
       if(doc[0]['Slot_no'] != null){
@@ -89,7 +123,7 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
       else{
 
 
-        Future<bool> ret() async{
+        Future ret() async{
           QuerySnapshot q = await Firestore.instance.collection('ParkingDB')
               .where('Slot_no', isGreaterThan: '')
               .getDocuments();
@@ -103,35 +137,35 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
           return i1;
         }
 
-          bool j = await ret();
-          if(j) {
-            Fluttertoast.showToast(
-                msg: "This Slot has already been booked. Please choose another slot",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.CENTER,
-                timeInSecForIos: 1,
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-                fontSize: 16.0);
+        bool j = await ret();
+        if(j) {
+          Fluttertoast.showToast(
+              msg: "This Slot has already been booked. Please choose another slot",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIos: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0);
 
-          }
+        }
 
-          else{
-            final DocumentReference documentReference =
-            Firestore.instance.collection("ParkingDB").document(
-            doc[0].documentID);
-            Map<String, String> data = <String, String>{
+        else{
+          final DocumentReference documentReference =
+          Firestore.instance.collection("ParkingDB").document(
+              doc[0].documentID);
+          Map<String, String> data = <String, String>{
             "Email": "${widget.username}",
             "Slot_no": i
-            };
-            documentReference.updateData(data).whenComplete(() {
+          };
+          documentReference.updateData(data).whenComplete(() {
             print("Document Added");
-            }).catchError((e) => print(e));
+          }).catchError((e) => print(e));
 
           Navigator.push(
-           context, MaterialPageRoute(builder: (context) =>
-            slotshow(slotno: i, username: "${widget.username}",)));
-      }
+              context, MaterialPageRoute(builder: (context) =>
+              slotshow(slotno: i, username: "${widget.username}",)));
+        }
 
       }
 
@@ -143,80 +177,33 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
 
 
 
-    Widget getlistview() {
-       var Listitems = getListelements();
-
-
-       var listView = ListView.separated(
-           itemCount: Listitems.length, itemBuilder: (context, index) {
-
-
-         return Container(
-
-           child: ListTile(contentPadding: EdgeInsets.only(bottom: 5.0),
-
-
-               trailing: new RawMaterialButton(
-                 onPressed: () {},
-                 child: new Icon(
-                   Icons.local_parking,
-                   color: Colors.green,
-                   size: 45.0,
-                 ),
-
-               ),
-               leading: new RawMaterialButton(
-                 onPressed: () {},
-                 child: new Icon(
-                   Icons.directions_car,
-                   color: Colors.blue,
-                   size: 45.0,
-                 ),
-                 shape: new CircleBorder(),
-                 elevation: 2.0,
-                 fillColor: Colors.white,
-                 padding: const EdgeInsets.all(5.0),
-               ),
-
-               title: Text(Listitems[index], style: TextStyle(
-                   fontFamily: 'Roboto',
-                   fontSize: 25,
-                   fontWeight: FontWeight.bold),),
-               onTap: () {
-                 _add(Listitems[index]);
-               }
-
-
-           ),
-         );
-       },
-           separatorBuilder: (context, index) {
-             return Divider();
-           }
-
-
-       );
-
-
-       return listView;
-
-
-   }
-
-
-
-
-
-
     List<Widget> containers = [
       SafeArea(
-        child: Container(
+          child: Container(
 
-            child: Scaffold(
-              body:  getlistview(),
+              child: Scaffold(
+                body:  FutureBuilder(future: getdata(), builder: (context, snapshot){
+
+                  if(snapshot.connectionState == ConnectionState.waiting || snapshot.hasData == null){
+                    return Center(
+                      child: Text('Loading...'),
+                    );
+                  }else{
+
+                     return ListView.builder(itemCount: snapshot.data.length,
+                          itemBuilder: (context, index){
+                       return ListTile (
+                         title: Text(snapshot.data[index].data['Slot_no']),
+                         enabled: true,
+
+                       );
+                          });
+                  }
+
+                },),
               )
-            )
-        ),
+          )
+      ),
 
       Container(
         child: Scaffold(
