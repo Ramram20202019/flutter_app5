@@ -4,7 +4,7 @@ import 'dart:async';
 import 'main.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'choosealocation.dart';
+import 'choosealocation2.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 
@@ -174,7 +174,7 @@ class _bookaslot extends State<bookaslot> with WidgetsBindingObserver {
           case 'Ascendas IT Park, Taramani':
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) =>
-                choosealocation(username: '${widget.username}',)));
+                choosealocation2(username: '${widget.username}',)));
             break;
           case 'Tidel Park, Chennai':
 
@@ -224,8 +224,8 @@ class _bookaslot extends State<bookaslot> with WidgetsBindingObserver {
 
   Future<String> getslot() async {
     QuerySnapshot q = await Firestore.instance.collection('ParkingDB').where('Slot_no', isGreaterThan: '').getDocuments();
-    int t = 20;
-    int s = 20 - q.documents.length;
+    int t = 10;
+    int s = 10 - q.documents.length;
     String v = s.toString() + '/' + t.toString();
     return v;
 

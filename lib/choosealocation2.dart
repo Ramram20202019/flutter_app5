@@ -58,41 +58,14 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
 
     Future getdata () async {
 
-      List<String> l = new List<String>();
-       await Firestore.instance
-          .collection('ParkingDB').orderBy("Slot_no")
-          .where("Slot_no", isGreaterThan: "")
-      .getDocuments().then((QuerySnapshot s) {
-        print(s.documents.toString());
-       l.add(s.documents.toString());
-       print(l);
-      });
-
-       print(l);
-       
-      QuerySnapshot q = await Firestore.instance.collection('ParkingDB')
+           QuerySnapshot q = await Firestore.instance.collection('ParkingDB')
           .where('Slot_no', isGreaterThan: '').getDocuments();
       var d = q.documents;
-      QuerySnapshot q1 = await Firestore.instance.collection('Slots').getDocuments();
+      QuerySnapshot q1 = await Firestore.instance.collection('Slots').orderBy('Slot_no').getDocuments();
       var d1 = q1.documents;
 
 
-     /* QuerySnapshot q2 = await Firestore.instance.collection('Empty_Slot').getDocuments();
-      for(int j = 0; j < q.documents.length; j++){
-        for(int k =0; k < q1.documents.length; k++){
-          if(d[j]['Slot_no'] != d1[k]['Slot_no']){
-
-            var d2 = q2.documents;
-            for(int m =0; m < q2.documents.length; m++){
-              if(d1[k]['Slot_no'] == d2[m]['Slot_no']){break;}
-              else{ DocumentReference ref =  await Firestore.instance.collection('Empty_Slot').add({'Slot_no': d1[k]['Slot_no']});}
-            }
-          }
-        }
-      }*/
-
-
-      return q1.documents;
+         return q1.documents;
     }
 
 
@@ -162,6 +135,13 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
             print("Document Added");
           }).catchError((e) => print(e));
 
+          QuerySnapshot q2 = await Firestore.instance.collection('Slots').where('Slot_no', isEqualTo: i).getDocuments();
+          var doc1 = q2.documents;
+
+          Firestore.instance.collection("Slots").document(
+              doc1[0].documentID).delete();
+
+
           Navigator.push(
               context, MaterialPageRoute(builder: (context) =>
               slotshow(slotno: i, username: "${widget.username}",)));
@@ -194,7 +174,7 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
                           itemBuilder: (context, index){
                        return ListTile (
                          title: Text(snapshot.data[index].data['Slot_no']),
-                         enabled: true,
+                         onTap: (){_add(snapshot.data[index].data['Slot_no']);},
 
                        );
                           });

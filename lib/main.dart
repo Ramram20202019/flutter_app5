@@ -317,27 +317,29 @@ class _Page2state extends State<Page2> {
             children: <Widget>[
 
 
-              SizedBox(height: 25.0),
+              SizedBox(height: 25.0,),
               Padding(
                 padding: EdgeInsets.only(left: 40.0),
-                child: Row(
-                  children: <Widget>[
-                    Text('Welcome\t',
-                        style: TextStyle(
-                            fontFamily: 'Pacifico',
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25.0
-                        )),
-                    Text('${widget.username}' + '!!!!',
-                        style: TextStyle(
-                            fontFamily: 'Pacifico',
-                            color: Colors.black,
-                            fontSize: 25.0
+                child: Wrap(
+                  children: <Widget>[Row(
+                    children: <Widget>[
+                      Text('Welcome\t',
+                          style: TextStyle(
+                              fontFamily: 'Pacifico',
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 25.0
+                          )),
+                      Text('${widget.username}'.substring(0, 8) + '!!!!',
+                          style: TextStyle(
+                              fontFamily: 'Pacifico',
+                              color: Colors.black,
+                              fontSize: 25.0
 
-                        ))
-                  ],
-                ),
+                          ))
+                    ],
+                  ),
+                ]),
               ),
 
               SizedBox(height: 40.0),

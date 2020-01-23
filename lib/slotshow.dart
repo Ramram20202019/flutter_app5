@@ -171,7 +171,18 @@ Future<String> initstate() async {
         .getDocuments();
     var doc = querySnapshot.documents;
 
+
+
     if (doc[0]['Slot_no'] != null) {
+
+      final DocumentReference documentReference =
+      Firestore.instance.collection("Slots").document();
+      Map<String, String> data = <String, String>{
+        "Slot_no": doc[0]['Slot_no']
+      };
+      documentReference.setData(data).whenComplete(() {
+        print("Document Added");
+      }).catchError((e) => print(e));
       Firestore.instance.collection('ParkingDB').document(doc[0].documentID).updateData({'Slot_no': FieldValue.delete()}).whenComplete((){
         Fluttertoast.showToast(
             msg: "You have cancelled your slot",
