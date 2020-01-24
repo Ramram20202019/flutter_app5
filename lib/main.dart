@@ -3,11 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'dart:async';
 import 'slotshow.dart';
 import 'bookaslot.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/services.dart';
+
 
 
 
@@ -41,9 +42,10 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
   String un;
   String pw;
 
+
+
   @override
   void initState() {
-
     super.initState();
     WidgetsBinding.instance.addObserver(this);
   }
@@ -232,6 +234,25 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
 
   Future<void> signin() async {
 
+    DateTime now = DateTime.now();
+    DateFormat dateFormat = new DateFormat.Hm();
+    print(now);
+    DateTime close = dateFormat.parse("13:53");
+    close = new DateTime(now.year, now.month, now.day, close.hour, close.minute);
+    print(close);
+
+    /*if(now.isAfter(close)) {
+      QuerySnapshot querySnapshot = await Firestore.instance.collection(
+          'ParkingDB')
+          .orderBy('Slot_no')
+          .getDocuments();
+      var doc = querySnapshot.documents;
+      for(int i =0; i < querySnapshot.documents.length; i++) {
+        Firestore.instance.collection('ParkingDB').document(doc[i].documentID).updateData(
+            {'Slot_no': FieldValue.delete()});
+      }
+    }*/
+
 
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
@@ -273,6 +294,7 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
 
     }
   }
+
 
 
 }

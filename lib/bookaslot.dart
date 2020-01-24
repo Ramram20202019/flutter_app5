@@ -6,8 +6,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'choosealocation2.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-
+import 'package:location/location.dart';
+import 'package:great_circle_distance2/great_circle_distance2.dart';
 
 
 
@@ -23,10 +23,12 @@ class bookaslot extends StatefulWidget{
 
 class _bookaslot extends State<bookaslot> with WidgetsBindingObserver {
 
+  Location location = new Location();
 
   @override
   void initState() {
     super.initState();
+    _animateToUser();
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -41,9 +43,7 @@ class _bookaslot extends State<bookaslot> with WidgetsBindingObserver {
     print("APP_STATE: $state");
 
     if(state == AppLifecycleState.resumed){
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(
-          builder: (context) => MyHomePage()));
+
     }else if(state == AppLifecycleState.inactive){
       // app is inactive
     }else if(state == AppLifecycleState.paused){
@@ -110,16 +110,26 @@ class _bookaslot extends State<bookaslot> with WidgetsBindingObserver {
               target: LatLng(12.9864, 80.2425), zoom: 14),
           onMapCreated: (GoogleMapController controller) {
             _controller.complete(controller);
+
+
+
           },
+
+          myLocationEnabled: true,
+          myLocationButtonEnabled: true,
+
           markers: {
-            ascendasmarker, tidelmarker
+            ascendasmarker, tidelmarker,
           },
         )
     );
   }
+
+
+
   Marker ascendasmarker = Marker(
     markerId: MarkerId('Ascendas IT Park'),
-    position: LatLng(12.9864, 80.2425),
+    position: LatLng(12.9858, 80.2459),
 
     infoWindow: InfoWindow(title: 'Ascendas IT Park, Taramani', ),
     icon: BitmapDescriptor.defaultMarkerWithHue(
@@ -151,7 +161,7 @@ class _bookaslot extends State<bookaslot> with WidgetsBindingObserver {
               padding: const EdgeInsets.all(8.0),
               child: _boxes(
                   "https://www.google.com/maps/uv?hl=en&pb=!1s0x3a525d639e47618b%3A0xaa10fd327e29e31c!3m1!7e115!4shttps%3A%2F%2Flh5.googleusercontent.com%2Fp%2FAF1QipO4_ADl2bWjQ6Xaa8un7jOIMAwXbm2HkQCUPjD-%3Dw406-h200-k-no!5sascendas%20it%20park%20chennai%20-%20Google%20Search!15sCAQ&imagekey=!1e10!2sAF1QipNHLg-Eu9OUhgd1uH8T4_OfOHRyMH-BVTr_zeq1&sa=X&ved=2ahUKEwidp-vWpefmAhUnzjgGHce7CCoQoiowFHoECB0QBg",
-                  12.9864, 80.2425, "Ascendas IT Park, Taramani"),
+                  12.9858, 80.2459, "Ascendas IT Park, Taramani"),
             ),
             SizedBox(width: 10.0),
             Padding(
@@ -169,14 +179,23 @@ class _bookaslot extends State<bookaslot> with WidgetsBindingObserver {
 
   Widget _boxes(String _image, double lat, double long, String ParkName) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         switch(ParkName) {
           case 'Ascendas IT Park, Taramani':
+            var pos = await location.getLocation();
+           var gcd = GreatCircleDistance.fromDegrees(latitude1: pos.latitude, longitude1: pos.longitude, latitude2: lat, longitude2: long);
+            if(gcd.sphericalLawOfCosinesDistance() <= 500){
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) =>
-                choosealocation2(username: '${widget.username}',)));
-            break;
-          case 'Tidel Park, Chennai':
+                choosealocation2(username: '${widget.username}',)));}
+            else{ Fluttertoast.showToast(
+                msg: "Cannot book a slot, if you are more than 500m from the parking location",
+                toastLength: Toast.LENGTH_LONG,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIos: 1,
+                backgroundColor: Colors.red,
+                textColor: Colors.white,
+                fontSize: 16.0);}
 
         };
 
@@ -221,6 +240,20 @@ class _bookaslot extends State<bookaslot> with WidgetsBindingObserver {
         CameraPosition(target: LatLng(lat, long), zoom: 15, tilt: 50.0,
           bearing: 45.0,)));
   }
+
+
+_animateToUser() async {
+  var pos = await location.getLocation();
+
+  final GoogleMapController controller = await _controller.future;
+  controller.animateCamera(CameraUpdate.newCameraPosition(
+      CameraPosition(target: LatLng(pos.latitude, pos.longitude), zoom: 15, tilt: 50.0,
+        bearing: 45.0,)));
+
+
+}
+
+
 
   Future<String> getslot() async {
     QuerySnapshot q = await Firestore.instance.collection('ParkingDB').where('Slot_no', isGreaterThan: '').getDocuments();
