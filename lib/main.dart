@@ -77,8 +77,6 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
 
   }
 
-  /*Parking parking = new Parking();
-  String username, pwd;*/
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String un;
   String pw;
@@ -241,23 +239,25 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[ RaisedButton(
-                                      onPressed: () {
-                                        signin();
-                                      },
-                                      textColor: Colors.white,
-                                      splashColor: Colors.grey,
-                                    color: Color(0xFF42A5F5),
-                                      padding: const EdgeInsets.all(0.0),
+                                  children: <Widget>[ SizedBox(width:MediaQuery.of(context).size.width,
+                                    child: RaisedButton(
+                                        onPressed: () {
+                                          signin();
+                                        },
+                                        textColor: Colors.white,
+                                        splashColor: Colors.grey,
+                                      color: Color(0xFF42A5F5),
+                                        padding: const EdgeInsets.all(0.0),
 
-                                        child: const Text(
-                                            'SIGN IN',
-                                            style: TextStyle(fontSize: 10,
-                                                fontFamily: 'Pacifico')
+                                          child: const Text(
+                                              'SIGN IN',textAlign: TextAlign.center,
+                                              style: TextStyle(fontSize: 15,
+                                                  fontFamily: 'Roboto',)
+                                          ),
                                         ),
-                                      ),
+                                  ),
                                     SizedBox(height: 5.0,),
-                                    ButtonTheme(height: 50.0, minWidth: 10.0,
+                                    SizedBox(width: MediaQuery.of(context).size.width,
                                       child: RaisedButton( 
                                           onPressed: () {
                                             googlesignin();
@@ -267,15 +267,16 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
                                           padding: const EdgeInsets.all(0.0),
                                           child: Container(
 
-                                            padding: const EdgeInsets.all(20.0),
+                                            padding: const EdgeInsets.all(0.0),
                                             child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
                                               children: <Widget>[
                                                 Image.asset('assets/images/gicon.png'),
                                                 SizedBox(width: 15.0,),
                                                 const Text(
                                                   'SIGN IN WITH GOOGLE',
-                                                  style: TextStyle(fontSize: 10,
-                                                      fontFamily: 'Pacifico')
+                                                  style: TextStyle(fontSize: 15,
+                                                      fontFamily: 'Roboto')
                                               ),
                                             ]),
                                           )
@@ -296,14 +297,14 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
 
   Future<void> signin() async {
 
-    DateTime now = DateTime.now();
+    /*DateTime now = DateTime.now();
     DateFormat dateFormat = new DateFormat.Hm();
     print(now);
     DateTime close = dateFormat.parse("13:53");
     close = new DateTime(now.year, now.month, now.day, close.hour, close.minute);
     print(close);
 
-    /*if(now.isAfter(close)) {
+    if(now.isAfter(close)) {
       QuerySnapshot querySnapshot = await Firestore.instance.collection(
           'ParkingDB')
           .orderBy('Slot_no')
