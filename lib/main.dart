@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
 import 'slotshow.dart';
@@ -36,11 +37,52 @@ class MyHomePage extends StatefulWidget{
 
 class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
 
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn googleSignIn = new GoogleSignIn();
+
+  Future<FirebaseUser> googlesignin() async{
+    GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+    GoogleSignInAuthentication gSA = await googleSignInAccount.authentication;
+
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: gSA.accessToken,
+      idToken: gSA.idToken,
+    );
+    final FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
+    try {
+      Future<bool> ret() async {
+        QuerySnapshot q = await Firestore.instance.collection('ParkingDB')
+            .where('Email', isGreaterThan: '')
+            .getDocuments();
+        bool i1 = false;
+        var d = q.documents;
+        for (int j = 0; j < q.documents.length; j++) {
+          if (user.email == d[j]['Email'].toString()) {
+            i1 = true;
+          }
+        }
+        return i1;
+      }
+
+      bool j = await ret();
+      if (!j) {
+        Firestore.instance.collection("ParkingDB").document().setData(
+            {'Email': user.email});
+        print('User added to the database');
+      }
+      if(user != null){
+      Navigator.push(context, MaterialPageRoute(
+          builder: (context) => Page2(username: user.email,)));}
+    }catch(e){print(e);}
+
+  }
+
   /*Parking parking = new Parking();
   String username, pwd;*/
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String un;
   String pw;
+
 
 
 
@@ -61,9 +103,7 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
     print("APP_STATE: $state");
 
     if(state == AppLifecycleState.resumed){
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(
-          builder: (context) => MyHomePage()));
+
     }else if(state == AppLifecycleState.inactive){
       // app is inactive
     }else if(state == AppLifecycleState.paused){
@@ -198,29 +238,51 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
                                         color: Colors.grey, fontSize: 12.0),),
                                 ),
 
-                                RaisedButton(
-                                    onPressed: () {
-                                      signin();
-                                    },
-                                    textColor: Colors.white,
-                                    splashColor: Colors.grey,
-                                    padding: const EdgeInsets.all(0.0),
-                                    child: Container(
-                                      decoration: const BoxDecoration(
-                                        gradient: LinearGradient(
-                                          colors: <Color>[
-                                            Color(0xFFFF9861),
-                                            Color(0xFF42A5F5),
-                                          ],
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[ RaisedButton(
+                                      onPressed: () {
+                                        signin();
+                                      },
+                                      textColor: Colors.white,
+                                      splashColor: Colors.grey,
+                                    color: Color(0xFF42A5F5),
+                                      padding: const EdgeInsets.all(0.0),
+
+                                        child: const Text(
+                                            'SIGN IN',
+                                            style: TextStyle(fontSize: 10,
+                                                fontFamily: 'Pacifico')
                                         ),
                                       ),
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: const Text(
-                                          'SIGN IN',
-                                          style: TextStyle(fontSize: 20,
-                                              fontFamily: 'Pacifico')
+                                    SizedBox(height: 5.0,),
+                                    ButtonTheme(height: 50.0, minWidth: 10.0,
+                                      child: RaisedButton( 
+                                          onPressed: () {
+                                            googlesignin();
+                                          },
+                                          textColor: Colors.black87,
+                                          color: Colors.white,
+                                          padding: const EdgeInsets.all(0.0),
+                                          child: Container(
+
+                                            padding: const EdgeInsets.all(20.0),
+                                            child: Row(
+                                              children: <Widget>[
+                                                Image.asset('assets/images/gicon.png'),
+                                                SizedBox(width: 15.0,),
+                                                const Text(
+                                                  'SIGN IN WITH GOOGLE',
+                                                  style: TextStyle(fontSize: 10,
+                                                      fontFamily: 'Pacifico')
+                                              ),
+                                            ]),
+                                          )
                                       ),
-                                    )
+                                    ),
+
+                                  ],
                                 )
                               ]
                           )
@@ -298,6 +360,8 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
 
 
 }
+
+
 
 
 

@@ -58,7 +58,7 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
 
     Future getdata () async {
 
-           QuerySnapshot q = await Firestore.instance.collection('ParkingDB')
+     ;      QuerySnapshot q = await Firestore.instance.collection('ParkingDB')
           .where('Slot_no', isGreaterThan: '').getDocuments();
       var d = q.documents;
       QuerySnapshot q1 = await Firestore.instance.collection('Slots').orderBy('Slot_no').getDocuments();
@@ -170,14 +170,41 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
                     );
                   }else{
 
-                     return ListView.builder(itemCount: snapshot.data.length,
-                          itemBuilder: (context, index){
-                       return ListTile (
-                         title: Text(snapshot.data[index].data['Slot_no']),
-                         onTap: (){_add(snapshot.data[index].data['Slot_no']);},
+                    return ListView.separated(itemCount: snapshot.data.length,
+                        itemBuilder: (context, index){
+                          return ListTile (trailing: new RawMaterialButton(
+                            onPressed: () {},
+                            child: new Icon(
+                              Icons.local_parking,
+                              color: Colors.green,
+                              size: 45.0,
+                            ),
 
-                       );
-                          });
+                          ),
+                            leading: new RawMaterialButton(
+                              onPressed: () {},
+                              child: new Icon(
+                                Icons.directions_car,
+                                color: Colors.blue,
+                                size: 45.0,
+                              ),
+                              shape: new CircleBorder(),
+                              elevation: 2.0,
+                              fillColor: Colors.white,
+                              padding: const EdgeInsets.all(5.0),
+                            ),
+
+                            title: Text(snapshot.data[index].data['Slot_no']),
+                            onTap: (){_add(snapshot.data[index].data['Slot_no']);},
+
+                          );
+
+                        },
+                        separatorBuilder: (context, index) {
+                          return Divider();
+                        }
+                    );
+
                   }
 
                 },),
