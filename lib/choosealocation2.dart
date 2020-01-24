@@ -7,6 +7,7 @@ import 'main.dart';
 import 'slotshow.dart';
 
 
+// ignore: must_be_immutable, camel_case_types
 class choosealocation2 extends StatefulWidget {
   String username;
   choosealocation2({Key key, this.username}) : super (key: key);
@@ -15,6 +16,7 @@ class choosealocation2 extends StatefulWidget {
   _choosealocation2state createState() => _choosealocation2state();
 }
 
+// ignore: camel_case_types
 class _choosealocation2state extends State<choosealocation2> with TickerProviderStateMixin, WidgetsBindingObserver {
 
   @override
@@ -45,7 +47,6 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
   }
 
 
-  TabController _tabController;
   bool showFab = true;
 
 
@@ -58,11 +59,8 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
 
     Future getdata () async {
 
-     ;      QuerySnapshot q = await Firestore.instance.collection('ParkingDB')
-          .where('Slot_no', isGreaterThan: '').getDocuments();
-      var d = q.documents;
+
       QuerySnapshot q1 = await Firestore.instance.collection('Slots').orderBy('Slot_no').getDocuments();
-      var d1 = q1.documents;
 
 
          return q1.documents;

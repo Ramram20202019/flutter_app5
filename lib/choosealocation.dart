@@ -6,6 +6,7 @@ import 'main.dart';
 import 'slotshow.dart';
 
 
+// ignore: must_be_immutable
 class choosealocation extends StatefulWidget {
   String username;
   choosealocation({Key key, this.username}) : super (key: key);
@@ -14,6 +15,7 @@ class choosealocation extends StatefulWidget {
   _choosealocationstate createState() => _choosealocationstate();
 }
 
+// ignore: camel_case_types
 class _choosealocationstate extends State<choosealocation> with TickerProviderStateMixin, WidgetsBindingObserver {
 
   @override
@@ -47,7 +49,6 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
  /* final DocumentReference documentReference =
   Firestore.instance.collection("ParkingDB").document();*/
 
-  TabController _tabController;
   bool showFab = true;
 
 
@@ -144,6 +145,7 @@ class _choosealocationstate extends State<choosealocation> with TickerProviderSt
 
 
     Widget getlistview() {
+       // ignore: non_constant_identifier_names
        var Listitems = getListelements();
 
 

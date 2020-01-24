@@ -11,6 +11,7 @@ import 'package:great_circle_distance2/great_circle_distance2.dart';
 
 
 
+// ignore: must_be_immutable, camel_case_types
 class bookaslot extends StatefulWidget{
   String username;
   String park;
@@ -21,6 +22,7 @@ class bookaslot extends StatefulWidget{
 }
 
 
+// ignore: camel_case_types
 class _bookaslot extends State<bookaslot> with WidgetsBindingObserver {
 
   Location location = new Location();
@@ -51,16 +53,11 @@ class _bookaslot extends State<bookaslot> with WidgetsBindingObserver {
     }
   }
   Completer<GoogleMapController> _controller = Completer();
-  final LatLng _center = const LatLng(45.521563, -122.677433);
 
 
-  void _onMapCreated(GoogleMapController controller) {
-
-  }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return MaterialApp(
 
 
@@ -177,6 +174,7 @@ class _bookaslot extends State<bookaslot> with WidgetsBindingObserver {
     );
   }
 
+  // ignore: non_constant_identifier_names
   Widget _boxes(String _image, double lat, double long, String ParkName) {
     return GestureDetector(
       onTap: () async {
@@ -197,7 +195,7 @@ class _bookaslot extends State<bookaslot> with WidgetsBindingObserver {
                 textColor: Colors.white,
                 fontSize: 16.0);}
 
-        };
+        }
 
       },
       child: Container(
@@ -234,12 +232,12 @@ class _bookaslot extends State<bookaslot> with WidgetsBindingObserver {
     );
   }
 
-  Future<void> _gotoLocation(double lat, double long) async {
+  /*Future<void> _gotoLocation(double lat, double long) async {
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(
         CameraPosition(target: LatLng(lat, long), zoom: 15, tilt: 50.0,
           bearing: 45.0,)));
-  }
+  }*/
 
 
 _animateToUser() async {
@@ -266,6 +264,7 @@ _animateToUser() async {
 
 
 
+  // ignore: missing_return
   Widget myDetailsContainer1(String ParkName) {
     switch(ParkName) {
       case 'Ascendas IT Park, Taramani':

@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:intl/intl.dart';
 import 'dart:async';
 import 'slotshow.dart';
 import 'bookaslot.dart';
@@ -74,6 +73,7 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
       Navigator.push(context, MaterialPageRoute(
           builder: (context) => Page2(username: user.email,)));}
     }catch(e){print(e);}
+    return user;
 
   }
 
@@ -359,13 +359,12 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
   }
 
 
-
 }
 
 
 
 
-
+// ignore: must_be_immutable
 class Page2 extends StatefulWidget{
   String username;
   Page2({Key key, this.username}) : super (key: key);

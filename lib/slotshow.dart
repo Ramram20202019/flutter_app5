@@ -8,6 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 
 
+// ignore: must_be_immutable, camel_case_types
 class slotshow extends StatefulWidget{
   String slotno;
   String username;
@@ -17,6 +18,7 @@ class slotshow extends StatefulWidget{
   _slotshow createState() => _slotshow();
 }
 
+// ignore: camel_case_types
 class _slotshow extends State<slotshow> with WidgetsBindingObserver{
 
   @override
