@@ -568,7 +568,7 @@ class _Page2state extends State<Page2> {
      Alert(
        context: context,
        type: AlertType.warning,
-       title: "Are you sure you want to exit? ",
+       title: "Are you sure you want to exit?",
        buttons: [
          DialogButton(
            child: Text(

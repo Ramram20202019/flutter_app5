@@ -237,7 +237,7 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
 
           title: Text('Choose a Slot', textAlign: TextAlign.center,),
           actions: <Widget>[
-            new IconButton(icon: Icon(Icons.account_box, color: Color(0xFFFFFFFF), size: 35.0,), onPressed: (){_signout(context);}),
+            new IconButton(icon: Icon(MdiIcons.logout, color: Color(0xFFFFFFFF), size: 35.0,), onPressed: (){_signout(context);}),
           ],
           elevation: 0.7,
           backgroundColor: Color(0xFFFF9861),
