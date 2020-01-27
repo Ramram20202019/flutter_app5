@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flushbar/flushbar.dart';
 import 'main.dart';
 import 'slotshow.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -281,15 +282,36 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
           onPressed: () async{
             try {
               await FirebaseAuth.instance.signOut();
+              Flushbar(
+                padding: EdgeInsets.all(10),
+                borderRadius: 8,
+                backgroundColor: Colors.black,
+                boxShadows: [
+                  BoxShadow(
+                    color: Colors.black45,
+                    offset: Offset(3, 3),
+                    blurRadius: 3,
+                  ),
+                ],
+                duration: new Duration(seconds: 4),
+                dismissDirection: FlushbarDismissDirection.HORIZONTAL,
+                forwardAnimationCurve: Curves.easeInOutCubic,
+                title: "Logged Out Successfully",
+                message: " ",
+                flushbarPosition: FlushbarPosition.TOP,
+                icon: Icon(Icons.check, color: Colors.green,),
 
-              Fluttertoast.showToast(
+              ).show(context);
+
+
+              /* Fluttertoast.showToast(
                   msg: "Loggedout Succesfully",
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.CENTER,
                   timeInSecForIos: 1,
                   backgroundColor: Colors.green,
                   textColor: Colors.white,
-                  fontSize: 16.0);
+                  fontSize: 16.0);*/
               Navigator.of(context).popUntil((route) => route.isFirst);
               Navigator.pushReplacement(
                   context, MaterialPageRoute(

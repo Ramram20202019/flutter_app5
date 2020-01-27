@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:async';
+import 'package:flushbar/flushbar.dart';
 import 'slotshow.dart';
 import 'bookaslot.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -50,15 +51,36 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
       idToken: gSA.idToken,
     );
     final FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
-    _scaffoldKey.currentState.showSnackBar(
-        new SnackBar(duration: new Duration(seconds: 4), content:
+    Flushbar(
+      padding: EdgeInsets.all(10),
+      borderRadius: 8,
+      backgroundColor: Colors.black,
+      boxShadows: [
+        BoxShadow(
+          color: Colors.black45,
+          offset: Offset(3, 3),
+          blurRadius: 3,
+        ),
+      ],
+      duration: new Duration(seconds: 5),
+      dismissDirection: FlushbarDismissDirection.HORIZONTAL,
+      forwardAnimationCurve: Curves.easeInOutCubic,
+      leftBarIndicatorColor: Colors.white,
+      title: "Signing-In...",
+      message: "Please Wait",
+      flushbarPosition: FlushbarPosition.BOTTOM,
+      icon: CircularProgressIndicator(),
+
+    ).show(context);
+   /* _scaffoldKey.currentState.showSnackBar(
+        new SnackBar(duration: new Duration(seconds: 6), content:
         new Row(
           children: <Widget>[
             new CircularProgressIndicator(),
             new Text("  Signing-In...")
           ],
         ),
-        ));
+        ));*/
     try {
       Future<bool> ret() async {
         QuerySnapshot q = await Firestore.instance.collection('ParkingDB')
@@ -258,7 +280,7 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
                                           signin();
                                         },
                                         textColor: Colors.white,
-                                        splashColor: Colors.grey,
+                                        splashColor: Colors.red,
                                       color: Color(0xFF42A5F5),
                                         padding: const EdgeInsets.all(0.0),
 
@@ -369,15 +391,80 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
         }
         Navigator.push(context, MaterialPageRoute(builder: (context) => Page2(username: un,)));
       } catch (e) {
-        Fluttertoast.showToast(
 
-            msg: "Invalid Credentials. Please try again!!!!!",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIos: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0);
+        switch(e.message){
+          case 'A network error (such as timeout, interrupted connection or unreachable host) has occurred.':
+            Flushbar(
+              padding: EdgeInsets.all(10),
+              borderRadius: 8,
+              backgroundColor: Colors.black,
+              boxShadows: [
+                BoxShadow(
+                  color: Colors.black45,
+                  offset: Offset(3, 3),
+                  blurRadius: 3,
+                ),
+              ],
+              duration: new Duration(seconds: 4),
+              dismissDirection: FlushbarDismissDirection.HORIZONTAL,
+              leftBarIndicatorColor: Colors.red,
+              forwardAnimationCurve: Curves.easeInOutCubic,
+              title: "Oops! Please Check you Internet Connection",
+              message: " ",
+              flushbarPosition: FlushbarPosition.TOP,
+              icon: Icon(Icons.network_check, color: Colors.red,),
+
+            ).show(context);
+           /* _scaffoldKey.currentState.showSnackBar(
+              new SnackBar(duration: new Duration(seconds: 4),
+
+                    action: new SnackBarAction(label: "OK",onPressed: (){},),
+                    content:
+                  new Row(
+                    children: <Widget>[
+                      new Icon(Icons.network_check, color: Colors.red,),
+                      new Text("  Oops! Please Check you Internet connection")
+                    ],
+
+                  ),
+                  ),
+                );*/
+            break;
+          default:
+            Flushbar(
+              padding: EdgeInsets.all(10),
+              borderRadius: 8,
+              backgroundColor: Colors.black,
+              boxShadows: [
+                BoxShadow(
+                  color: Colors.black45,
+                  offset: Offset(3, 3),
+                  blurRadius: 3,
+                ),
+              ],
+              duration: new Duration(seconds: 4),
+              dismissDirection: FlushbarDismissDirection.HORIZONTAL,
+              leftBarIndicatorColor: Colors.red,
+              forwardAnimationCurve: Curves.easeInOutCubic,
+              title: "Invalid Credentails.! Please try again",
+              message: "Please check your Username/Password",
+              flushbarPosition: FlushbarPosition.TOP,
+              icon: Icon(Icons.warning, color: Colors.red,),
+
+            ).show(context);
+           /* _scaffoldKey.currentState.showSnackBar(
+                new SnackBar(duration: new Duration(seconds: 4),
+                  action: new SnackBarAction(label: "OK", onPressed: (){},),
+                  content:
+                new Row(
+                  children: <Widget>[
+                    new Icon(Icons.warning, color: Colors.red,),
+                    new Text("  Invalid Credentails.! Please try again")
+                  ],
+                ),
+                ));*/
+        }
+
 
         print(e.message);
       }
@@ -558,6 +645,7 @@ class _Page2state extends State<Page2> {
   }
 
   Future<void> checkuser() async {
+
     QuerySnapshot querySnapshot = await Firestore.instance.collection(
         'ParkingDB')
         .where('Email', isEqualTo: '${widget.username}')
@@ -590,6 +678,7 @@ class _Page2state extends State<Page2> {
   }
 
    _signout(context) async {
+
      Alert(
        context: context,
        type: AlertType.warning,
@@ -610,20 +699,42 @@ class _Page2state extends State<Page2> {
            ),
            onPressed: () async{
                try {
-                 await FirebaseAuth.instance.signOut();
 
-                 Fluttertoast.showToast(
+
+                     /*Fluttertoast.showToast(
                      msg: "Loggedout Succesfully",
                      toastLength: Toast.LENGTH_SHORT,
-                     gravity: ToastGravity.CENTER,
+                     gravity: ToastGravity.BOTTOM,
                      timeInSecForIos: 1,
                      backgroundColor: Colors.green,
                      textColor: Colors.white,
-                     fontSize: 16.0);
+                     fontSize: 20.0);*/
                  Navigator.of(context).popUntil((route) => route.isFirst);
                  Navigator.pushReplacement(
                      context, MaterialPageRoute(
                      builder: (context) => MyHomePage()));
+                 Flushbar(
+                   padding: EdgeInsets.all(10),
+                   borderRadius: 8,
+                   backgroundColor: Colors.black,
+                   boxShadows: [
+                     BoxShadow(
+                       color: Colors.black45,
+                       offset: Offset(3, 3),
+                       blurRadius: 3,
+                     ),
+                   ],
+                   duration: new Duration(seconds: 4),
+                   dismissDirection: FlushbarDismissDirection.HORIZONTAL,
+                   forwardAnimationCurve: Curves.easeInOutCubic,
+                   title: "Logged Out Successfully",
+                   message: " ",
+                   flushbarPosition: FlushbarPosition.TOP,
+                   icon: Icon(Icons.check, color: Colors.green,),
+
+                 ).show(context);
+
+
                }
                catch (e) {
                  print(e.message);
