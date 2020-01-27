@@ -1,4 +1,4 @@
-
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +7,9 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:async';
 import 'slotshow.dart';
 import 'bookaslot.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 
 
@@ -394,8 +396,7 @@ class _Page2state extends State<Page2> {
              },
             ),
           actions: <Widget>[
-            Container(padding: EdgeInsets.only(top: 17.0),child: new Text('Logout',  style: TextStyle(fontFamily: 'Roboto', fontSize: 22.0),)),
-            new IconButton(icon: Icon(Icons.account_box, color: Color(0xFFFFFFFF), size: 35.0,), onPressed: (){_signout();})
+            new IconButton(icon: Icon(MdiIcons.logout, color: Color(0xFFFFFFFF), size: 35.0,), onPressed: (){_signout(context);})
           ],
 
         ),
@@ -563,27 +564,54 @@ class _Page2state extends State<Page2> {
     }
   }
 
-   _signout() async{
- try{
-   await FirebaseAuth.instance.signOut();
-   Fluttertoast.showToast(
+   _signout(context) async {
+     Alert(
+       context: context,
+       type: AlertType.warning,
+       title: "Are you sure you want to exit? ",
+       buttons: [
+         DialogButton(
+           child: Text(
+             "NO",
+             style: TextStyle(color: Colors.white, fontSize: 20),
+           ),
+           onPressed: () => Navigator.pop(context),
+           width: 120,
+         ),
+         DialogButton(
+           child: Text(
+             "YES",
+             style: TextStyle(color: Colors.white, fontSize: 20),
+           ),
+           onPressed: () async{
+               try {
+                 await FirebaseAuth.instance.signOut();
 
-       msg: "Loggedout Succesfully",
-       toastLength: Toast.LENGTH_SHORT,
-       gravity: ToastGravity.CENTER,
-       timeInSecForIos: 1,
-       backgroundColor: Colors.green,
-       textColor: Colors.white,
-       fontSize: 16.0);
-   Navigator.of(context).popUntil((route) => route.isFirst);
-   Navigator.pushReplacement(
-       context, MaterialPageRoute(
-       builder: (context) => MyHomePage()));
- }
-catch(e){
-   print(e.message);}
+                 Fluttertoast.showToast(
+                     msg: "Loggedout Succesfully",
+                     toastLength: Toast.LENGTH_SHORT,
+                     gravity: ToastGravity.CENTER,
+                     timeInSecForIos: 1,
+                     backgroundColor: Colors.green,
+                     textColor: Colors.white,
+                     fontSize: 16.0);
+                 Navigator.of(context).popUntil((route) => route.isFirst);
+                 Navigator.pushReplacement(
+                     context, MaterialPageRoute(
+                     builder: (context) => MyHomePage()));
+               }
+               catch (e) {
+                 print(e.message);
+               }
 
-  }
+           },
+           width: 120,
+         ),
+       ],
+     ).show();
+
+
+   }
 }
 
 

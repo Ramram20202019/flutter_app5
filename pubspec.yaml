@@ -32,6 +32,9 @@ dependencies:
   location: ^2.3.5
   great_circle_distance2: ^1.0.1+1
   google_sign_in: ^4.1.1
+  material_design_icons_flutter: ^3.4.4795
+  bot_toast: ^2.2.1
+  rflutter_alert: ^1.0.3
 
 
   # The following adds the Cupertino Icons font to your application.

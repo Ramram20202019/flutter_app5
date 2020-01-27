@@ -1,10 +1,11 @@
-
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'main.dart';
 import 'slotshow.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 
 // ignore: must_be_immutable, camel_case_types
@@ -182,7 +183,7 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
                             leading: new RawMaterialButton(
                               onPressed: () {},
                               child: new Icon(
-                                Icons.directions_car,
+                                MdiIcons.car,
                                 color: Colors.blue,
                                 size: 45.0,
                               ),
@@ -236,8 +237,7 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
 
           title: Text('Choose a Slot', textAlign: TextAlign.center,),
           actions: <Widget>[
-            Container(padding: EdgeInsets.only(top: 15.0),child:  Text('Logout',  style: TextStyle(fontFamily: 'Roboto', fontSize: 22.0),)),
-            new IconButton(icon: Icon(Icons.account_box, color: Color(0xFFFFFFFF), size: 35.0,), onPressed: (){_signout();}),
+            new IconButton(icon: Icon(Icons.account_box, color: Color(0xFFFFFFFF), size: 35.0,), onPressed: (){_signout(context);}),
           ],
           elevation: 0.7,
           backgroundColor: Color(0xFFFF9861),
@@ -259,28 +259,54 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
       ),
     );
   }
-  _signout() async{
-    try{
-      await FirebaseAuth.instance.signOut();
-      Fluttertoast.showToast(
+  _signout(context) async {
+    Alert(
+      context: context,
+      type: AlertType.warning,
+      title: "Are you sure you want to exit? ",
+      buttons: [
+        DialogButton(
+          child: Text(
+            "NO",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          onPressed: () => Navigator.pop(context),
+          width: 120,
+        ),
+        DialogButton(
+          child: Text(
+            "YES",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          onPressed: () async{
+            try {
+              await FirebaseAuth.instance.signOut();
 
-          msg: "Loggedout Succesfully",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIos: 1,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 16.0);
-      Navigator.of(context).popUntil((route) => route.isFirst);
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(
-          builder: (context) => MyHomePage()));
-    }
-    catch(e){
-      print(e.message);}
+              Fluttertoast.showToast(
+                  msg: "Loggedout Succesfully",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.CENTER,
+                  timeInSecForIos: 1,
+                  backgroundColor: Colors.green,
+                  textColor: Colors.white,
+                  fontSize: 16.0);
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(
+                  builder: (context) => MyHomePage()));
+            }
+            catch (e) {
+              print(e.message);
+            }
+
+          },
+          width: 120,
+        ),
+      ],
+    ).show();
+
 
   }
-
 
 
 
