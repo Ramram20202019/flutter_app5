@@ -263,7 +263,7 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
     Alert(
       context: context,
       type: AlertType.warning,
-      title: "Are you sure you want to exit? ",
+      title: "Are you sure you want to Logout? ",
       buttons: [
         DialogButton(
           child: Text(

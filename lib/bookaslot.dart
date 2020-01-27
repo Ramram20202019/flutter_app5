@@ -182,12 +182,12 @@ class _bookaslot extends State<bookaslot> with WidgetsBindingObserver {
           case 'Ascendas IT Park, Taramani':
             var pos = await location.getLocation();
            var gcd = GreatCircleDistance.fromDegrees(latitude1: pos.latitude, longitude1: pos.longitude, latitude2: lat, longitude2: long);
-            if(gcd.sphericalLawOfCosinesDistance() <= 500){
+            if(gcd.sphericalLawOfCosinesDistance() <= 1000){
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) =>
                 choosealocation2(username: '${widget.username}',)));}
             else{ Fluttertoast.showToast(
-                msg: "Cannot book a slot, if you are more than 500m from the parking location",
+                msg: "Cannot book a slot, if you are more than 1Km from the parking location",
                 toastLength: Toast.LENGTH_LONG,
                 gravity: ToastGravity.CENTER,
                 timeInSecForIos: 1,
@@ -350,7 +350,7 @@ _animateToUser() async {
     Alert(
       context: context,
       type: AlertType.warning,
-      title: "Are you sure you want to exit? ",
+      title: "Are you sure you want to Logout? ",
       buttons: [
         DialogButton(
           child: Text(

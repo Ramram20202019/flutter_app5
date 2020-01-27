@@ -215,7 +215,7 @@ Future<String> initstate() async {
     Alert(
       context: context,
       type: AlertType.warning,
-      title: "Are you sure you want to exit? ",
+      title: "Are you sure you want to Logout? ",
       buttons: [
         DialogButton(
           child: Text(

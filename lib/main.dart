@@ -50,6 +50,15 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
       idToken: gSA.idToken,
     );
     final FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
+    _scaffoldKey.currentState.showSnackBar(
+        new SnackBar(duration: new Duration(seconds: 4), content:
+        new Row(
+          children: <Widget>[
+            new CircularProgressIndicator(),
+            new Text("  Signing-In...")
+          ],
+        ),
+        ));
     try {
       Future<bool> ret() async {
         QuerySnapshot q = await Firestore.instance.collection('ParkingDB')
@@ -80,6 +89,7 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
   }
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   String un;
   String pw;
 
@@ -120,6 +130,7 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
+        key: _scaffoldKey,
 
         backgroundColor: Color(0xFFFF9861),
         body: Form(
@@ -299,7 +310,9 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
 
   Future<void> signin() async {
 
-    /*DateTime now = DateTime.now();
+
+
+          /*DateTime now = DateTime.now();
     DateFormat dateFormat = new DateFormat.Hm();
     print(now);
     DateTime close = dateFormat.parse("13:53");
@@ -320,9 +333,21 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
 
 
     if (_formKey.currentState.validate()) {
+
       _formKey.currentState.save();
+
       try {
+
         await FirebaseAuth.instance.signInWithEmailAndPassword(email: un, password: pw);
+        _scaffoldKey.currentState.showSnackBar(
+            new SnackBar(duration: new Duration(seconds: 4), content:
+            new Row(
+              children: <Widget>[
+                new CircularProgressIndicator(),
+                new Text("  Signing-In...")
+              ],
+            ),
+            ));
         Future<bool> ret() async{
           QuerySnapshot q = await Firestore.instance.collection('ParkingDB')
               .where('Email', isGreaterThan: '')
@@ -568,7 +593,7 @@ class _Page2state extends State<Page2> {
      Alert(
        context: context,
        type: AlertType.warning,
-       title: "Are you sure you want to exit?",
+       title: "Are you sure you want to Logout?",
        buttons: [
          DialogButton(
            child: Text(
