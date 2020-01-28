@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app4/slotshow.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:flushbar/flushbar.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'main.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'choosealocation2.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,23 +13,27 @@ import 'package:location/location.dart';
 import 'package:great_circle_distance2/great_circle_distance2.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
+import 'slotshow2.dart';
+
 
 
 // ignore: must_be_immutable, camel_case_types
-class bookaslot extends StatefulWidget{
+class bookaslot2 extends StatefulWidget{
   String username;
   String park;
-  bookaslot({Key key, this.username}) : super (key: key);
+  bookaslot2({Key key, this.username}) : super (key: key);
 
   @override
-  _bookaslot createState() => _bookaslot();
+  _bookaslot2 createState() => _bookaslot2();
 }
 
 
 // ignore: camel_case_types
-class _bookaslot extends State<bookaslot> with WidgetsBindingObserver {
+class _bookaslot2 extends State<bookaslot2> with WidgetsBindingObserver {
 
   Location location = new Location();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
 
   @override
   void initState() {
@@ -61,30 +66,61 @@ class _bookaslot extends State<bookaslot> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: MaterialApp(
 
 
-      home: Scaffold(
-        appBar: AppBar(leading:
-        IconButton(
-          icon: Icon(Icons.arrow_back_ios),
+        home: Scaffold(
+          key: _scaffoldKey,
 
-          onPressed: () { Navigator.pop(context);
+          drawer: new Drawer(
+            // Add a ListView to the drawer. This ensures the user can scroll
+            // through the options in the drawer if there isn't enough vertical
+            // space to fit everything.
+            child: ListView(
+              // Important: Remove any padding from the ListView.
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                UserAccountsDrawerHeader(
+                  accountEmail: Text('${widget.username}'),
+                  currentAccountPicture:
+                  Icon(Icons.account_circle,size: 100.0,),
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                  ),
+                ),
+                ListTile(
+                  title: Text('My Bookings'),
+                  leading: Icon(MdiIcons.car, color: Colors.black,),
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => slotshow2(username: '${widget.username}',)));
 
-          },
-        ),
+                  },
+                ),
+              ],
+            ),
+          ),
 
-          title: Text('Choose a Location', textAlign: TextAlign.center,),
-          actions: <Widget>[
-            new IconButton(icon: Icon(MdiIcons.logout, color: Color(0xFFFFFFFF), size: 35.0,), onPressed: (){_signout(context);})],
-          backgroundColor: Color(0xFFFF9861),
-        ),
-        body: Stack(
-          children: <Widget>[
-            _buildGoogleMap(context),
-            _buildContainer(),
+          appBar: AppBar(leading:
+          IconButton(
+            icon: Icon(Icons.menu),
 
-          ],
+            onPressed: ()  => _scaffoldKey.currentState.openDrawer()),
+            title: Text('Choose a Location', textAlign: TextAlign.center,),
+            actions: <Widget>[
+              Transform.scale(scale: 0.7 ,child: new IconButton(icon: Icon(MdiIcons.logout, color: Color(0xFFFFFFFF), size: 35.0,), onPressed: (){_signout(context);}))],
+            backgroundColor: Colors.blue,
+          ),
+          body: Stack(
+            children: <Widget>[
+              _buildGoogleMap(context),
+              _buildContainer(),
+
+
+
+            ],
+          ),
         ),
       ),
     );
@@ -183,11 +219,11 @@ class _bookaslot extends State<bookaslot> with WidgetsBindingObserver {
         switch(ParkName) {
           case 'Ascendas IT Park, Taramani':
             var pos = await location.getLocation();
-           var gcd = GreatCircleDistance.fromDegrees(latitude1: pos.latitude, longitude1: pos.longitude, latitude2: lat, longitude2: long);
+            var gcd = GreatCircleDistance.fromDegrees(latitude1: pos.latitude, longitude1: pos.longitude, latitude2: lat, longitude2: long);
             if(gcd.sphericalLawOfCosinesDistance() <= 1000){
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) =>
-                choosealocation2(username: '${widget.username}',)));}
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) =>
+                  choosealocation2(username: '${widget.username}',)));}
             else{ Fluttertoast.showToast(
                 msg: "Cannot book a slot, if you are more than 1Km from the parking location",
                 toastLength: Toast.LENGTH_LONG,
@@ -242,16 +278,16 @@ class _bookaslot extends State<bookaslot> with WidgetsBindingObserver {
   }*/
 
 
-_animateToUser() async {
-  var pos = await location.getLocation();
+  _animateToUser() async {
+    var pos = await location.getLocation();
 
-  final GoogleMapController controller = await _controller.future;
-  controller.animateCamera(CameraUpdate.newCameraPosition(
-      CameraPosition(target: LatLng(pos.latitude, pos.longitude), zoom: 15, tilt: 80.0,
-        bearing: 45.0,)));
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(target: LatLng(pos.latitude, pos.longitude), zoom: 15, tilt: 80.0,
+          bearing: 45.0,)));
 
 
-}
+  }
 
 
 
@@ -319,31 +355,31 @@ _animateToUser() async {
         ); break;
       case 'Tidel Park, Chennai':
         return Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Container(
-                  child: Text(ParkName,
-                    style: TextStyle(
-                        color: Color(0xff6200ee),
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.bold),
-                  )),
-            ),
-            SizedBox(height: 5.0),
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Container(
+                    child: Text(ParkName,
+                      style: TextStyle(
+                          color: Color(0xff6200ee),
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold),
+                    )),
+              ),
+              SizedBox(height: 5.0),
 
-                    Container(
-                        child: Text(
-                          "Coming Soon",
-                          style: TextStyle(
-                              color: Colors.black54,
-                              fontSize: 30.0,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Roboto'
-                          ),
-                        )),
-          ]
+              Container(
+                  child: Text(
+                    "Coming Soon",
+                    style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Roboto'
+                    ),
+                  )),
+            ]
         );
 
     }
@@ -385,13 +421,13 @@ _animateToUser() async {
                     blurRadius: 3,
                   ),
                 ],
-                  duration: new Duration(seconds: 4),
-                  dismissDirection: FlushbarDismissDirection.HORIZONTAL,
-                  forwardAnimationCurve: Curves.easeInOutCubic,
-                  title: "Logged Out Successfully",
-                  message: " ",
-                  flushbarPosition: FlushbarPosition.TOP,
-                  icon: Icon(Icons.thumb_up, color: Colors.white,),
+                duration: new Duration(seconds: 4),
+                dismissDirection: FlushbarDismissDirection.HORIZONTAL,
+                forwardAnimationCurve: Curves.easeInOutCubic,
+                title: "Logged Out Successfully",
+                message: " ",
+                flushbarPosition: FlushbarPosition.TOP,
+                icon: Icon(Icons.thumb_up, color: Colors.white,),
 
               ).show(context);
             }

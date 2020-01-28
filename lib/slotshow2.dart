@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:flutter_app4/bookaslot2.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,17 +14,17 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 
 // ignore: must_be_immutable, camel_case_types
-class slotshow extends StatefulWidget{
+class slotshow2 extends StatefulWidget{
   String slotno;
   String username;
-  slotshow({Key key, this.slotno, this.username}) : super (key: key);
+  slotshow2({Key key, this.slotno, this.username}) : super (key: key);
 
   @override
-  _slotshow createState() => _slotshow();
+  _slotshow2 createState() => _slotshow2();
 }
 
 // ignore: camel_case_types
-class _slotshow extends State<slotshow> with WidgetsBindingObserver{
+class _slotshow2 extends State<slotshow2> with WidgetsBindingObserver{
 
   @override
   void initState() {
@@ -50,8 +53,8 @@ class _slotshow extends State<slotshow> with WidgetsBindingObserver{
     }
   }
 
-Future<String> initstate() async {
-      QuerySnapshot querySnapshot = await Firestore.instance.collection(
+  Future<String> initstate() async {
+    QuerySnapshot querySnapshot = await Firestore.instance.collection(
         'ParkingDB')
         .where('Email', isEqualTo: '${widget.username}')
         .getDocuments();
@@ -59,14 +62,14 @@ Future<String> initstate() async {
 
     if (doc[0]['Slot_no'] != null) {
       await Future.delayed(Duration(seconds: 2));
-      String v = "Hello\t" + doc[0]['Email'] + "\t....You have booked the slot\t" + doc[0]['Slot_no'];
-     return v;
+      String v = "You have booked the slot\t" + doc[0]['Slot_no'];
+      return v;
     }
 
     else {
       await Future.delayed(Duration(seconds: 2));
 
-      String v = "Hello\t"+ doc[0]['Email'] + '\t....Please book a slot';
+      String v = "No Bookings Yet";
       return v;
     }
   }
@@ -78,100 +81,78 @@ Future<String> initstate() async {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        backgroundColor: Color(0xFFFF9861),
+        child: Scaffold(
+            backgroundColor: Colors.white,
 
-        appBar: AppBar(
-          leading:
-          IconButton(
-            icon: Icon(Icons.arrow_back_ios),
+            appBar: AppBar(
+              leading:
+              IconButton(
+                icon: Icon(Icons.arrow_back_ios),
 
-            onPressed: () { Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Page2(username: '${widget.username}',)));
+                onPressed: () { Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => bookaslot2(username: '${widget.username}',)));
 
-            },
-          ),
+                },
+              ),
 
-           title: Text('Your Bookings', style: TextStyle(fontFamily: 'Roboto', fontSize: 22.0),),
-           actions: <Widget>[
-             new IconButton(icon: Icon(MdiIcons.logout, color: Color(0xFFFFFFFF), size: 35.0,), onPressed: (){_signout(context);})],
+              title: Text('Your Bookings',textAlign: TextAlign.center,),
+              actions: <Widget>[
+                Transform.scale(scale: 0.7,child: new IconButton(icon: Icon(MdiIcons.logout, color: Color(0xFFFFFFFF), size: 35.0,), onPressed: (){_signout(context);}))],
 
-          backgroundColor: Color(0xFFFF9861),
-        ),
-
-
-        body:
-        Center(
-          child: Container(padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 10.0),
-            height: 500.0,
-
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(80.0)),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black87,
-                      offset: Offset(0.0, 0.0),
-                      blurRadius: 25.0
-                  )
-                ]
-
+              backgroundColor: Colors.blue,
             ),
-            child:  Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(padding: EdgeInsets.only(top: 50.0),
-                     child: FutureBuilder<String>(
-                      future: initstate(),
-                      initialData: "Please Wait Loading......",
+
+
+            body:
+            Center(
+
+                  child:  Center(
+                    child: Scaffold(
+                      body:Container(
+                      child: FutureBuilder<String>(
+                        future: initstate(),
+                      initialData: "Loading",
                       builder: (context, snapshot) {
 
-                        return new Text(snapshot.data.toString(), style: TextStyle(fontFamily: 'Roboto', fontSize: 25.0, fontWeight: FontWeight.bold),);
-                     }),
-                ),
+                        return Container(
+                          height: 100.0,
+                          child: Card(
+                              margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
+                              child: Padding(padding: const EdgeInsets.all(12.0),
+                               child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                 children: <Widget>[
+                                   Text(snapshot.data.toString(), style: TextStyle(fontFamily: 'Roboto'),),
+                                  Align( alignment: Alignment.centerRight,
+                                    child: IconButton(icon: Icon(Icons.cancel),
+                                      color: Colors.red,
+                                      onPressed: () async{
+                                        bool _isbe;
+                                        QuerySnapshot querySnapshot = await Firestore.instance.collection(
+                                            'ParkingDB')
+                                            .where('Email', isEqualTo: '${widget.username}')
+                                            .getDocuments();
+                                        var doc = querySnapshot.documents;
+                                        if (doc[0]['Slot_no'] != null) {_isbe = true;}
+                                        else{_isbe = false;}
 
-                  Container(padding: EdgeInsets.only(top: 50.0, right: 50.0),
-                      child: RaisedButton(
-                          onPressed: () async{
-                            bool _isbe;
-                            QuerySnapshot querySnapshot = await Firestore.instance.collection(
-                                'ParkingDB')
-                                .where('Email', isEqualTo: '${widget.username}')
-                                .getDocuments();
-                            var doc = querySnapshot.documents;
-                            if (doc[0]['Slot_no'] != null) {_isbe = true;}
-                            else{_isbe = false;}
+                                        _isbe ? checkdata(): null;
+                                      } ,),
+                                  ),
 
-                            _isbe ? checkdata(): null;
-                          },
+                                 ],
+                              ),),
 
-                          textColor: Colors.white,
-                          splashColor: Colors.grey,
-                          padding: const EdgeInsets.all(0.0),
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: <Color>[
-                                  Color(0xFFFF9861),
-                                  Color(0xFF42A5F5),
-                                ],
-                              ),
+
                             ),
-                            padding: const EdgeInsets.all(10.0),
-                            child: const Text(
-                                'CANCEL BOOKING',
-                                style: TextStyle(fontSize: 20,
-                                    fontFamily: 'Pacifico')
-                            ),
-                          )
-                      )
+                        );
+
+                      })),
+                    ),
                   )
-              ]),
+
             )
-                ),
         )
-      )
     );
 
   }
@@ -203,7 +184,7 @@ Future<String> initstate() async {
             backgroundColor: Colors.red,
             textColor: Colors.white,
             fontSize: 16.0);
-        Navigator.push(context, MaterialPageRoute(builder: (context) => Page2(username: '${widget.username}',)));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => bookaslot2(username: '${widget.username}',)));
       });
     }
 

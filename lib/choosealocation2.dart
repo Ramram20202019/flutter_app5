@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flushbar/flushbar.dart';
 import 'main.dart';
-import 'slotshow.dart';
+import 'slotshow2.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 
@@ -91,7 +92,7 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
             fontSize: 16.0);
         Navigator.push(
             context, MaterialPageRoute(builder: (context) =>
-            slotshow(username: doc[0]['Email'],)));
+            slotshow2(username: doc[0]['Email'],)));
       }
       else{
 
@@ -144,7 +145,7 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
 
           Navigator.push(
               context, MaterialPageRoute(builder: (context) =>
-              slotshow(slotno: i, username: "${widget.username}",)));
+              slotshow2(slotno: i, username: "${widget.username}",)));
         }
 
       }
@@ -166,7 +167,12 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
 
                   if(snapshot.connectionState == ConnectionState.waiting || snapshot.hasData == null){
                     return Center(
-                      child: Text('Loading...'),
+                      child: Row(mainAxisAlignment: MainAxisAlignment.center,crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                        Text('Loading...', style: TextStyle(fontSize: 20.0, fontFamily: 'Roboto'),),
+                        CircularProgressIndicator(strokeWidth: 2.0,)
+
+                      ]),
                     );
                   }else{
 
@@ -215,7 +221,7 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
       Container(
         child: Scaffold(
           body: Container(padding: EdgeInsets.only(left: 100.0, top: 250.0),
-            child: new Text("Coming Soon", textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Roboto', fontWeight: FontWeight.bold, fontSize: 40.0),),
+            child:  Center(child: Text("Coming Soon", textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Roboto', fontWeight: FontWeight.bold, fontSize: 40.0),)),
           ),
         ),
       ),
@@ -238,10 +244,10 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
 
           title: Text('Choose a Slot', textAlign: TextAlign.center,),
           actions: <Widget>[
-            new IconButton(icon: Icon(MdiIcons.logout, color: Color(0xFFFFFFFF), size: 35.0,), onPressed: (){_signout(context);}),
+            Transform.scale(scale: 0.7,child: new IconButton(icon: Icon(MdiIcons.logout, color: Color(0xFFFFFFFF), size: 35.0,), onPressed: (){_signout(context);})),
           ],
           elevation: 0.7,
-          backgroundColor: Color(0xFFFF9861),
+          backgroundColor: Colors.blue,
           bottom: TabBar(
             tabs: <Widget>[
               Tab(
@@ -282,10 +288,17 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
           onPressed: () async{
             try {
               await FirebaseAuth.instance.signOut();
+
+
+
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(
+                  builder: (context) => MyHomePage()));
               Flushbar(
                 padding: EdgeInsets.all(10),
                 borderRadius: 8,
-                backgroundColor: Colors.black,
+                backgroundColor: Colors.blue,
                 boxShadows: [
                   BoxShadow(
                     color: Colors.black45,
@@ -299,23 +312,9 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
                 title: "Logged Out Successfully",
                 message: " ",
                 flushbarPosition: FlushbarPosition.TOP,
-                icon: Icon(Icons.check, color: Colors.green,),
+                icon: Icon(Icons.thumb_up, color: Colors.white,),
 
               ).show(context);
-
-
-              /* Fluttertoast.showToast(
-                  msg: "Loggedout Succesfully",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.CENTER,
-                  timeInSecForIos: 1,
-                  backgroundColor: Colors.green,
-                  textColor: Colors.white,
-                  fontSize: 16.0);*/
-              Navigator.of(context).popUntil((route) => route.isFirst);
-              Navigator.pushReplacement(
-                  context, MaterialPageRoute(
-                  builder: (context) => MyHomePage()));
             }
             catch (e) {
               print(e.message);

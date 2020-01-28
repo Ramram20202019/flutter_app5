@@ -1,11 +1,13 @@
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:async';
 import 'package:flushbar/flushbar.dart';
+import 'bookaslot2.dart';
 import 'slotshow.dart';
 import 'bookaslot.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -51,36 +53,16 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
       idToken: gSA.idToken,
     );
     final FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
-    Flushbar(
-      padding: EdgeInsets.all(10),
-      borderRadius: 8,
-      backgroundColor: Colors.black,
-      boxShadows: [
-        BoxShadow(
-          color: Colors.black45,
-          offset: Offset(3, 3),
-          blurRadius: 3,
-        ),
-      ],
-      duration: new Duration(seconds: 5),
-      dismissDirection: FlushbarDismissDirection.HORIZONTAL,
-      forwardAnimationCurve: Curves.easeInOutCubic,
-      leftBarIndicatorColor: Colors.white,
-      title: "Signing-In...",
-      message: "Please Wait",
-      flushbarPosition: FlushbarPosition.BOTTOM,
-      icon: CircularProgressIndicator(),
 
-    ).show(context);
-   /* _scaffoldKey.currentState.showSnackBar(
-        new SnackBar(duration: new Duration(seconds: 6), content:
+     _scaffoldKey.currentState.showSnackBar(
+        new SnackBar(duration: new Duration(seconds: 4), content:
         new Row(
           children: <Widget>[
             new CircularProgressIndicator(),
             new Text("  Signing-In...")
           ],
         ),
-        ));*/
+        ));
     try {
       Future<bool> ret() async {
         QuerySnapshot q = await Firestore.instance.collection('ParkingDB')
@@ -104,7 +86,7 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
       }
       if(user != null){
       Navigator.push(context, MaterialPageRoute(
-          builder: (context) => Page2(username: user.email,)));}
+          builder: (context) => bookaslot2(username: user.email,)));}
     }catch(e){print(e);}
     return user;
 
@@ -147,212 +129,289 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
   var _u = new TextEditingController();
   var _p = new TextEditingController();
 
+  Widget _email() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'Email',
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Roboto',
+          ),
+        ),
+        SizedBox(height: 10.0),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: BoxDecoration(
+            color: Color(0xFF6CA8F1),
+            borderRadius: BorderRadius.circular(10.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 6.0,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          height: 60.0,
+          child: TextFormField(
+            controller: _u,
+            validator: (val) =>
+            val.isEmpty
+                ? 'Email cannot be empty'
+                : null,
+
+            onSaved: (val) => un = val,
+            keyboardType: TextInputType.emailAddress,
+            style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'Roboto',
+            ),
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.only(top: 14.0),
+              prefixIcon: Icon(
+                Icons.email,
+                color: Colors.white,
+              ),
+              hintText: 'Enter your Email',
+              hintStyle: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Varela',
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _password() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'Password',
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Roboto',
+          ),
+        ),
+        SizedBox(height: 10.0),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: BoxDecoration(
+            color: Color(0xFF6CA8F1),
+            borderRadius: BorderRadius.circular(10.0),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 6.0,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          height: 60.0,
+          child: TextFormField(
+            controller: _p,
+            validator: (val) =>
+            val.isEmpty
+                ? 'Password cannot be empty'
+                : null,
+            onSaved: (val) => pw = val,
+            obscureText: true,
+            style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'Roboto',
+            ),
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.only(top: 14.0),
+              prefixIcon: Icon(
+                Icons.lock,
+                color: Colors.white,
+              ),
+              hintText: 'Enter your Password',
+              hintStyle: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Varela',
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+  Widget _loginbutton() {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 25.0),
+      width: double.infinity,
+      child: RaisedButton(
+        elevation: 5.0,
+        onPressed: () => signin(),
+        padding: EdgeInsets.all(15.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        color: Colors.white,
+        child: Text(
+          'LOGIN',
+          style: TextStyle(
+            color: Color(0xFF527DAA),
+            letterSpacing: 1.5,
+            fontSize: 18.0,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Roboto',
+          ),
+        ),
+      ),
+    );
+  }
+  Widget _extratext() {
+    return Column(
+      children: <Widget>[
+        Text(
+          '- OR -',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        SizedBox(height: 20.0),
+        Text(
+          'Sign in with',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Varela',
+          ),
+        ),
+      ],
+    );
+  }
+  Widget _socialicon(Function onTap, AssetImage logo) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 60.0,
+        width: 60.0,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              offset: Offset(0, 2),
+              blurRadius: 6.0,
+            ),
+          ],
+          image: DecorationImage(
+            image: logo,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _iconrow() {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 30.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          _socialicon(
+                () => googlesignin(),
+            AssetImage(
+              'assets/images/gimage.png',
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
         key: _scaffoldKey,
-
-        backgroundColor: Color(0xFFFF9861),
-        body: Form(
-            key: _formKey,
-            child: ListView(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(top: 15.0, left: 10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Form(
+        key: _formKey,
+        child: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.light,
+          child: GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(),
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  height: double.infinity,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Color(0xFF73AEF5),
+                        Color(0xFFFFFFFF),
+                        Color(0xFF478DE0),
+                        Color(0xFF398AE5),
+                      ],
+                      stops: [0.1, 0.4, 0.7, 0.9],
+                    ),
+                  ),
+                ),
+                Container(
+                  height: double.infinity,
+                  child: SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 40.0,
+                      vertical: 120.0,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        IconButton(icon: Icon(Icons.arrow_back_ios),
-                            disabledColor: Colors.white,
-                            onPressed: null),
+                        Text(
+                          'My Parking App',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Pacifico',
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 30.0),
+                        _email(),
+                        SizedBox(
+                          height: 30.0,
+                        ),
+                        _password(),
+
+
+                        _loginbutton(),
+                        _extratext(),
+                        _iconrow(),
                       ],
                     ),
                   ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
 
-                  SizedBox(height: 25.0),
-                  Padding(
-                    padding: EdgeInsets.only(left: 40.0),
-                    child: Row(
-                      children: <Widget>[
-                        Text('My Parking',
-                            style: TextStyle(
-                                fontFamily: 'Pacifico',
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 30.0
-                            )),
-                        Text('\tApp',
-                            style: TextStyle(
-                                fontFamily: 'Pacifico',
-                                color: Colors.white,
-                                fontSize: 30.0
 
-                            ))
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 40.0),
-                  Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height - 320.0,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(60.0),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.black87,
-                                offset: Offset(0.0, 0.0),
-                                blurRadius: 25.0
-                            )
-                          ]
-
-                      ),
-                      child: Padding(
-                          padding: EdgeInsets.only(
-                              left: 16.0, right: 16.0, top: 50.0),
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                Text('LOGIN',
-                                    style: TextStyle(
-                                        fontSize: 25.0,
-                                        fontFamily: 'Roboto',
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: .6)),
-                                SizedBox(
-                                  height: 15.0,
-                                ),
-                                Text('Email',
-                                    style: TextStyle(
-                                        fontSize: 15.0,
-                                        fontFamily: 'Roboto',
-                                        letterSpacing: .6)),
-                                new TextFormField(
-                                  controller: _u,
-                                  validator: (val) =>
-                                  val.isEmpty
-                                      ? 'Email cannot be empty'
-                                      : null,
-
-                                  onSaved: (val) => un = val,
-
-                                  decoration: InputDecoration(
-                                    hintText: "Email",
-
-                                    hintStyle: TextStyle(
-                                        color: Colors.grey, fontSize: 12.0),),
-                                ),
-
-                                SizedBox(
-                                  height: 15.0,
-                                ),
-                                Text('PASSWORD',
-                                    style: TextStyle(
-                                        fontSize: 15.0,
-                                        fontFamily: 'Roboto',
-                                        letterSpacing: .6)),
-                                new TextFormField(
-                                  controller: _p,
-                                  validator: (val) =>
-                                  val.isEmpty
-                                      ? 'Password cannot be empty'
-                                      : null,
-                                  onSaved: (val) => pw = val,
-                                  obscureText: true,
-                                  decoration: InputDecoration(
-                                    hintText: "password",
-                                    hintStyle: TextStyle(
-                                        color: Colors.grey, fontSize: 12.0),),
-                                ),
-
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[ SizedBox(width:MediaQuery.of(context).size.width,
-                                    child: RaisedButton(
-                                        onPressed: () {
-                                          signin();
-                                        },
-                                        textColor: Colors.white,
-                                        splashColor: Colors.red,
-                                      color: Color(0xFF42A5F5),
-                                        padding: const EdgeInsets.all(0.0),
-
-                                          child: const Text(
-                                              'SIGN IN',textAlign: TextAlign.center,
-                                              style: TextStyle(fontSize: 15,
-                                                  fontFamily: 'Roboto',)
-                                          ),
-                                        ),
-                                  ),
-                                    SizedBox(height: 5.0,),
-                                    SizedBox(width: MediaQuery.of(context).size.width,
-                                      child: RaisedButton( 
-                                          onPressed: () {
-                                            googlesignin();
-                                          },
-                                          textColor: Colors.black87,
-                                          color: Colors.white,
-                                          padding: const EdgeInsets.all(0.0),
-                                          child: Container(
-
-                                            padding: const EdgeInsets.all(0.0),
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: <Widget>[
-                                                Image.asset('assets/images/gicon.png'),
-                                                SizedBox(width: 15.0,),
-                                                const Text(
-                                                  'SIGN IN WITH GOOGLE',
-                                                  style: TextStyle(fontSize: 15,
-                                                      fontFamily: 'Roboto')
-                                              ),
-                                            ]),
-                                          )
-                                      ),
-                                    ),
-
-                                  ],
-                                )
-                              ]
-                          )
-                      )
-                  )
-                ]
-            )
-        )
     );
   }
 
   Future<void> signin() async {
-
-
-
-          /*DateTime now = DateTime.now();
-    DateFormat dateFormat = new DateFormat.Hm();
-    print(now);
-    DateTime close = dateFormat.parse("13:53");
-    close = new DateTime(now.year, now.month, now.day, close.hour, close.minute);
-    print(close);
-
-    if(now.isAfter(close)) {
-      QuerySnapshot querySnapshot = await Firestore.instance.collection(
-          'ParkingDB')
-          .orderBy('Slot_no')
-          .getDocuments();
-      var doc = querySnapshot.documents;
-      for(int i =0; i < querySnapshot.documents.length; i++) {
-        Firestore.instance.collection('ParkingDB').document(doc[i].documentID).updateData(
-            {'Slot_no': FieldValue.delete()});
-      }
-    }*/
-
 
     if (_formKey.currentState.validate()) {
 
@@ -389,7 +448,7 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
           Firestore.instance.collection("ParkingDB").document().setData({'Email': un});
           print('User added to the database');
         }
-        Navigator.push(context, MaterialPageRoute(builder: (context) => Page2(username: un,)));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => bookaslot2(username: un,)));
       } catch (e) {
 
         switch(e.message){
@@ -397,7 +456,7 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
             Flushbar(
               padding: EdgeInsets.all(10),
               borderRadius: 8,
-              backgroundColor: Colors.black,
+              backgroundColor: Colors.blue,
               boxShadows: [
                 BoxShadow(
                   color: Colors.black45,
@@ -415,26 +474,12 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
               icon: Icon(Icons.network_check, color: Colors.red,),
 
             ).show(context);
-           /* _scaffoldKey.currentState.showSnackBar(
-              new SnackBar(duration: new Duration(seconds: 4),
-
-                    action: new SnackBarAction(label: "OK",onPressed: (){},),
-                    content:
-                  new Row(
-                    children: <Widget>[
-                      new Icon(Icons.network_check, color: Colors.red,),
-                      new Text("  Oops! Please Check you Internet connection")
-                    ],
-
-                  ),
-                  ),
-                );*/
-            break;
+           break;
           default:
             Flushbar(
               padding: EdgeInsets.all(10),
               borderRadius: 8,
-              backgroundColor: Colors.black,
+              backgroundColor: Colors.blue,
               boxShadows: [
                 BoxShadow(
                   color: Colors.black45,
@@ -452,26 +497,12 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
               icon: Icon(Icons.warning, color: Colors.red,),
 
             ).show(context);
-           /* _scaffoldKey.currentState.showSnackBar(
-                new SnackBar(duration: new Duration(seconds: 4),
-                  action: new SnackBarAction(label: "OK", onPressed: (){},),
-                  content:
-                new Row(
-                  children: <Widget>[
-                    new Icon(Icons.warning, color: Colors.red,),
-                    new Text("  Invalid Credentails.! Please try again")
-                  ],
-                ),
-                ));*/
-        }
-
-
+          }
         print(e.message);
       }
 
     }
   }
-
 
 }
 
@@ -499,14 +530,7 @@ class _Page2state extends State<Page2> {
         appBar: AppBar(
           backgroundColor: Color(0xFFFF9861),
 
-          leading:
-          IconButton(
-            icon: Icon(Icons.arrow_back_ios),
-
-              onPressed: () { Navigator.pop(context);
-
-             },
-            ),
+          automaticallyImplyLeading: false,
           actions: <Widget>[
             new IconButton(icon: Icon(MdiIcons.logout, color: Color(0xFFFFFFFF), size: 35.0,), onPressed: (){_signout(context);})
           ],
@@ -514,8 +538,6 @@ class _Page2state extends State<Page2> {
         ),
         body: ListView(
             children: <Widget>[
-
-
               SizedBox(height: 25.0,),
               Padding(
                 padding: EdgeInsets.only(left: 40.0),
@@ -680,6 +702,7 @@ class _Page2state extends State<Page2> {
    _signout(context) async {
 
      Alert(
+
        context: context,
        type: AlertType.warning,
        title: "Are you sure you want to Logout?",
@@ -700,15 +723,6 @@ class _Page2state extends State<Page2> {
            onPressed: () async{
                try {
 
-
-                     /*Fluttertoast.showToast(
-                     msg: "Loggedout Succesfully",
-                     toastLength: Toast.LENGTH_SHORT,
-                     gravity: ToastGravity.BOTTOM,
-                     timeInSecForIos: 1,
-                     backgroundColor: Colors.green,
-                     textColor: Colors.white,
-                     fontSize: 20.0);*/
                  Navigator.of(context).popUntil((route) => route.isFirst);
                  Navigator.pushReplacement(
                      context, MaterialPageRoute(
@@ -716,7 +730,7 @@ class _Page2state extends State<Page2> {
                  Flushbar(
                    padding: EdgeInsets.all(10),
                    borderRadius: 8,
-                   backgroundColor: Colors.black,
+                   backgroundColor: Colors.blue,
                    boxShadows: [
                      BoxShadow(
                        color: Colors.black45,
@@ -730,7 +744,7 @@ class _Page2state extends State<Page2> {
                    title: "Logged Out Successfully",
                    message: " ",
                    flushbarPosition: FlushbarPosition.TOP,
-                   icon: Icon(Icons.check, color: Colors.green,),
+                   icon: Icon(Icons.thumb_up, color: Colors.white,),
 
                  ).show(context);
 
