@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:flushbar/flushbar.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'constants.dart';
 import 'main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'choosealocation2.dart';
@@ -238,7 +239,7 @@ class _bookaslot2 extends State<bookaslot2> with WidgetsBindingObserver {
                  ).show();
             }
             else {
-              if(gcd.sphericalLawOfCosinesDistance() <= 1000){
+              if(gcd.sphericalLawOfCosinesDistance() <= getdist()){
                 Navigator.push(
                     context, MaterialPageRoute(builder: (context) =>
                     choosealocation2(username: '${widget.username}',)));}
@@ -319,14 +320,7 @@ class _bookaslot2 extends State<bookaslot2> with WidgetsBindingObserver {
 
 
 
-  Future<String> getslot() async {
-    QuerySnapshot q = await Firestore.instance.collection('ParkingDB').where('Slot_no', isGreaterThan: '').getDocuments();
-    int t = 16;
-    int s = 16 - q.documents.length;
-    String v = s.toString() + '/' + t.toString();
-    return v;
 
-  }
 
 
 

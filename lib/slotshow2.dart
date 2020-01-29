@@ -167,25 +167,49 @@ class _slotshow2 extends State<slotshow2> with WidgetsBindingObserver{
 
     if (doc[0]['Slot_no'] != null) {
 
-      final DocumentReference documentReference =
-      Firestore.instance.collection("Slots").document();
-      Map<String, String> data = <String, String>{
-        "Slot_no": doc[0]['Slot_no']
-      };
-      documentReference.setData(data).whenComplete(() {
-        print("Document Added");
-      }).catchError((e) => print(e));
-      Firestore.instance.collection('ParkingDB').document(doc[0].documentID).updateData({'Slot_no': FieldValue.delete()}).whenComplete((){
-        Fluttertoast.showToast(
-            msg: "You have cancelled your slot",
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIos: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0);
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => bookaslot2(username: '${widget.username}',)));
-      });
+      if(doc[0]['Slot_no'].toString().substring(0,2) == 'P1'){
+        final DocumentReference documentReference =
+        Firestore.instance.collection("Slots").document('Phase-1').collection('totslots').document();
+        Map<String, String> data = <String, String>{
+          "Slot_no": doc[0]['Slot_no']
+        };
+        documentReference.setData(data).whenComplete(() {
+          print("Document Added");
+        }).catchError((e) => print(e));
+        Firestore.instance.collection('ParkingDB').document(doc[0].documentID).updateData({'Slot_no': FieldValue.delete()}).whenComplete((){
+          Fluttertoast.showToast(
+              msg: "You have cancelled your slot",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIos: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0);
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => bookaslot2(username: '${widget.username}',)));
+        });
+      }
+      else{
+        final DocumentReference documentReference =
+        Firestore.instance.collection("Slots").document('Phase-3').collection('totslots').document();
+        Map<String, String> data = <String, String>{
+          "Slot_no": doc[0]['Slot_no']
+        };
+        documentReference.setData(data).whenComplete(() {
+          print("Document Added");
+        }).catchError((e) => print(e));
+        Firestore.instance.collection('ParkingDB').document(doc[0].documentID).updateData({'Slot_no': FieldValue.delete()}).whenComplete((){
+          Fluttertoast.showToast(
+              msg: "You have cancelled your slot",
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIos: 1,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0);
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => bookaslot2(username: '${widget.username}',)));
+        });
+      }
+
     }
 
   }

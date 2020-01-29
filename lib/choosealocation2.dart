@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_app4/constants.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -58,13 +59,14 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
 
 
 
-    Future getdata () async {
+    Future getdataP1 () async {
+      QuerySnapshot q1 = await Firestore.instance.collection('Slots').document('Phase-1').collection('totslots').orderBy('Slot_no').getDocuments();
+      return q1.documents;
+    }
 
-
-      QuerySnapshot q1 = await Firestore.instance.collection('Slots').orderBy('Slot_no').getDocuments();
-
-
-         return q1.documents;
+    Future getdataP2 () async {
+      QuerySnapshot q1 = await Firestore.instance.collection('Slots').document('Phase-3').collection('totslots').orderBy('Slot_no').getDocuments();
+      return q1.documents;
     }
 
 
@@ -73,8 +75,6 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
 
       QuerySnapshot querySnapshot = await Firestore.instance.collection('ParkingDB').where('Email', isEqualTo: '${widget.username}').getDocuments();
       var doc = querySnapshot.documents;
-
-
 
         Future ret() async{
           QuerySnapshot q = await Firestore.instance.collection('ParkingDB')
@@ -109,22 +109,41 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
               doc[0].documentID);
           Map<String, String> data = <String, String>{
             "Email": "${widget.username}",
-            "Slot_no": i
+            "Slot_no": i,
+
           };
           documentReference.updateData(data).whenComplete(() {
             print("Document Added");
           }).catchError((e) => print(e));
 
-          QuerySnapshot q2 = await Firestore.instance.collection('Slots').where('Slot_no', isEqualTo: i).getDocuments();
+          if(i.toString().substring(0, 2) == 'P1') {
+            QuerySnapshot q2 = await Firestore.instance.collection('Slots').document('Phase-1').collection('totslots')
+                .where('Slot_no', isEqualTo: i)
+                .getDocuments();
+            var doc1 = q2.documents;
+
+            Firestore.instance.collection("Slots").document('Phase-1').collection('totslots').document(
+                doc1[0].documentID).delete();
+
+
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) =>
+                slotshow2(slotno: i, username: "${widget.username}",)));
+          }
+          else{QuerySnapshot q2 = await Firestore.instance.collection('Slots').document('Phase-3').collection('totslots')
+              .where('Slot_no', isEqualTo: i)
+              .getDocuments();
           var doc1 = q2.documents;
 
-          Firestore.instance.collection("Slots").document(
+          Firestore.instance.collection("Slots").document('Phase-3').collection('totslots').document(
               doc1[0].documentID).delete();
 
 
           Navigator.push(
               context, MaterialPageRoute(builder: (context) =>
-              slotshow2(slotno: i, username: "${widget.username}",)));
+              slotshow2(slotno: i, username: "${widget.username}",)));}
+
+
         }
 
 
@@ -140,7 +159,7 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
           child: Container(
 
               child: Scaffold(
-                body:  FutureBuilder(future: getdata(), builder: (context, snapshot){
+                body:  FutureBuilder(future: getdataP1(), builder: (context, snapshot){
 
                   if(snapshot.connectionState == ConnectionState.waiting || snapshot.hasData == null){
                     return Center(
@@ -194,15 +213,64 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
               )
           )
       ),
+      SafeArea(
+          child: Container(
 
-      Container(
-        child: Scaffold(
-          body: Container(padding: EdgeInsets.only(left: 100.0, top: 250.0),
-            child:  Center(child: Text("Coming Soon", textAlign: TextAlign.center, style: TextStyle(fontFamily: 'Roboto', fontWeight: FontWeight.bold, fontSize: 40.0),)),
-          ),
-        ),
+              child: Scaffold(
+                body:  FutureBuilder(future: getdataP2(), builder: (context, snapshot){
+
+                  if(snapshot.connectionState == ConnectionState.waiting || snapshot.hasData == null){
+                    return Center(
+                      child: Row(mainAxisAlignment: MainAxisAlignment.center,crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Text('Loading...', style: TextStyle(fontSize: 20.0, fontFamily: 'Roboto'),),
+                            CircularProgressIndicator(strokeWidth: 2.0,)
+
+                          ]),
+                    );
+                  }else{
+
+                    return ListView.separated(itemCount: snapshot.data.length,
+                        itemBuilder: (context, index){
+                          return ListTile (trailing: new RawMaterialButton(
+                            onPressed: () {},
+                            child: new Icon(
+                              Icons.local_parking,
+                              color: Colors.green,
+                              size: 45.0,
+                            ),
+
+                          ),
+                            leading: new RawMaterialButton(
+                              onPressed: () {},
+                              child: new Icon(
+                                MdiIcons.car,
+                                color: Colors.blue,
+                                size: 45.0,
+                              ),
+                              shape: new CircleBorder(),
+                              elevation: 2.0,
+                              fillColor: Colors.white,
+                              padding: const EdgeInsets.all(5.0),
+                            ),
+
+                            title: Text(snapshot.data[index].data['Slot_no']),
+                            onTap: (){_add(snapshot.data[index].data['Slot_no']);},
+
+                          );
+
+                        },
+                        separatorBuilder: (context, index) {
+                          return Divider();
+                        }
+                    );
+
+                  }
+
+                },),
+              )
+          )
       ),
-
     ];
 
 
@@ -227,15 +295,29 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
           backgroundColor: Colors.blue,
           bottom: TabBar(
             tabs: <Widget>[
-              Tab(
-                text: 'PHASE - 1',
-              ),
-              Tab(
-                text: 'PHASE - 2',
-              ),
+              Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,children: <Widget>[
+                Tab(
+                  text: 'PHASE-1\t\t',
+                ),
+                        FutureBuilder(future: getslotP1(), builder: (context, snapshot){
 
-            ],
-          ),
+                              if(snapshot.connectionState == ConnectionState.waiting || snapshot.hasData == null){
+                                return CircularProgressIndicator();
+                              }
+                              else{return Text('('+snapshot.data.toString()+')', style: TextStyle(fontWeight: FontWeight.bold, color:Colors.black ),);}
+                                  }),],),
+             Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,children: <Widget>[ Tab(
+                text: 'PHASE-3\t\t',
+              ),FutureBuilder(future: getslotP2(), builder: (context, snapshot){
+
+                if(snapshot.connectionState == ConnectionState.waiting || snapshot.hasData == null){
+                  return CircularProgressIndicator();
+                }
+                else{return Text('('+snapshot.data.toString()+')', style: TextStyle(fontWeight: FontWeight.bold, color:Colors.black ),);}
+              })
+
+             ],)
+         ]),
         ),
         body: TabBarView(
           children: containers,
@@ -303,9 +385,7 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
       ],
     ).show();
 
-
   }
-
 
 
 }
