@@ -1,16 +1,11 @@
-import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:async';
 import 'package:flushbar/flushbar.dart';
 import 'bookaslot2.dart';
-import 'slotshow.dart';
-import 'bookaslot.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 
@@ -23,7 +18,6 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return MaterialApp(
       home:MyHomePage(),
       debugShowCheckedModeBanner: false,
@@ -338,7 +332,6 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
         key: _scaffoldKey,
       body: Form(
@@ -392,8 +385,6 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
                           height: 30.0,
                         ),
                         _password(),
-
-
                         _loginbutton(),
                         _extratext(),
                         _iconrow(),
@@ -510,15 +501,15 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
 
 
 // ignore: must_be_immutable
-class Page2 extends StatefulWidget{
+/*class Page2 extends StatefulWidget{
   String username;
   Page2({Key key, this.username}) : super (key: key);
 
   @override
   _Page2state createState() => _Page2state();
-}
+}*/
 
-class _Page2state extends State<Page2> {
+/*class _Page2state extends State<Page2> {
 
 
 
@@ -762,7 +753,7 @@ class _Page2state extends State<Page2> {
 
 
    }
-}
+}*/
 
 
 

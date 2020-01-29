@@ -53,8 +53,6 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
   bool showFab = true;
 
 
-
-
   @override
   Widget build(BuildContext context) {
 
@@ -75,26 +73,7 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
 
       QuerySnapshot querySnapshot = await Firestore.instance.collection('ParkingDB').where('Email', isEqualTo: '${widget.username}').getDocuments();
       var doc = querySnapshot.documents;
-      print(doc[0].documentID);
-      print(doc[0]['Slot_no']);
 
-
-
-      if(doc[0]['Slot_no'] != null){
-        print('Inside if');
-        Fluttertoast.showToast(
-            msg: "You have already booked a slot cannot book again",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIos: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0);
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) =>
-            slotshow2(username: doc[0]['Email'],)));
-      }
-      else{
 
 
         Future ret() async{
@@ -147,8 +126,6 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
               context, MaterialPageRoute(builder: (context) =>
               slotshow2(slotno: i, username: "${widget.username}",)));
         }
-
-      }
 
 
 
@@ -328,8 +305,6 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
 
 
   }
-
-
 
 
 

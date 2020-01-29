@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app4/slotshow.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:flushbar/flushbar.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'main.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'choosealocation2.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -85,14 +83,14 @@ class _bookaslot2 extends State<bookaslot2> with WidgetsBindingObserver {
                 UserAccountsDrawerHeader(
                   accountEmail: Text('${widget.username}'),
                   currentAccountPicture:
-                  Icon(Icons.account_circle,size: 100.0,),
+                  CircleAvatar(child: Icon(MdiIcons.account,size: 55.0,color: Colors.white,)),
                   decoration: BoxDecoration(
                     color: Colors.blue,
                   ),
                 ),
                 ListTile(
                   title: Text('My Bookings'),
-                  leading: Icon(MdiIcons.car, color: Colors.black,),
+                  leading: Icon(MdiIcons.carElectric, color: Colors.black,),
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => slotshow2(username: '${widget.username}',)));
 
@@ -220,18 +218,48 @@ class _bookaslot2 extends State<bookaslot2> with WidgetsBindingObserver {
           case 'Ascendas IT Park, Taramani':
             var pos = await location.getLocation();
             var gcd = GreatCircleDistance.fromDegrees(latitude1: pos.latitude, longitude1: pos.longitude, latitude2: lat, longitude2: long);
-            if(gcd.sphericalLawOfCosinesDistance() <= 1000){
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) =>
-                  choosealocation2(username: '${widget.username}',)));}
-            else{ Fluttertoast.showToast(
-                msg: "Cannot book a slot, if you are more than 1Km from the parking location",
-                toastLength: Toast.LENGTH_LONG,
-                gravity: ToastGravity.CENTER,
-                timeInSecForIos: 1,
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-                fontSize: 16.0);}
+            QuerySnapshot querySnapshot = await Firestore.instance.collection('ParkingDB').where('Email', isEqualTo: '${widget.username}').getDocuments();
+            var doc = querySnapshot.documents;
+            if(doc[0]['Slot_no'] != null) {
+              Alert(context: context,
+                title: "You already have a booked slot\t" + doc[0]['Slot_no'],
+                type: AlertType.error,
+                  buttons: [
+                    DialogButton(
+                      child: Text(
+                        "OK",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                      onPressed: () => Navigator.pop(context),
+                      width: 120,
+                    ),
+
+                  ]
+                 ).show();
+            }
+            else {
+              if(gcd.sphericalLawOfCosinesDistance() <= 1000){
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) =>
+                    choosealocation2(username: '${widget.username}',)));}
+
+              else{Alert(context: context,
+              title: "Cannot book a slot, if you are more than 1 KM from the parking location",
+              type: AlertType.error,
+                  buttons: [
+                    DialogButton(
+                      child: Text(
+                        "OK",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                      onPressed: () => Navigator.pop(context),
+                      width: 120,
+                    ),
+
+                  ]
+
+              ).show();}
+              }
 
         }
 
@@ -293,8 +321,8 @@ class _bookaslot2 extends State<bookaslot2> with WidgetsBindingObserver {
 
   Future<String> getslot() async {
     QuerySnapshot q = await Firestore.instance.collection('ParkingDB').where('Slot_no', isGreaterThan: '').getDocuments();
-    int t = 10;
-    int s = 10 - q.documents.length;
+    int t = 16;
+    int s = 16 - q.documents.length;
     String v = s.toString() + '/' + t.toString();
     return v;
 

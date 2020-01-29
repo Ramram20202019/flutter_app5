@@ -1,10 +1,11 @@
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+/*import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'main.dart';
+
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -273,7 +274,7 @@ Future<String> initstate() async {
 }
 
 
-
+*/
 
 
 
