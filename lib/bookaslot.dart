@@ -266,7 +266,7 @@ _animateToUser() async {
 
 
 
-  // ignore: missing_return
+  // ignore: missing_return, non_constant_identifier_names
   Widget myDetailsContainer1(String ParkName) {
     switch(ParkName) {
       case 'Ascendas IT Park, Taramani':

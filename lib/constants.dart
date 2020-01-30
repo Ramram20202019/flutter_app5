@@ -2,22 +2,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 // Get Slots for Phase - 1
  getslotP1() async {
-  QuerySnapshot q = await Firestore.instance.collection('ParkingDB').where('Slot_no', isGreaterThan: 'P1').getDocuments();
   QuerySnapshot q2 = await Firestore.instance.collection('Slots').document('Phase-1').collection('totslots').where('Slot_no', isGreaterThan: '').getDocuments();
-  int slots_p1 = 16;
+  int slotsP1 = 16;
   int t = q2.documents.length;
-  String v = t.toString() + '/' + slots_p1.toString();
+  String v = t.toString() + '/' + slotsP1.toString();
   return v;
 }
 
 
 //Get Slots for Phase - 2
 getslotP2() async {
- QuerySnapshot q = await Firestore.instance.collection('ParkingDB').where('Slot_no', isGreaterThan: 'P1').getDocuments();
  QuerySnapshot q2 = await Firestore.instance.collection('Slots').document('Phase-3').collection('totslots').where('Slot_no', isGreaterThan: '').getDocuments();
- int slots_p2 = 9;
+ int slotsP2 = 9;
  int t = q2.documents.length;
- String v = t.toString() + '/' + slots_p2.toString();
+ String v = t.toString() + '/' + slotsP2.toString();
  return v;
 }
 

@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:flutter_app4/bookaslot2.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -122,7 +121,7 @@ class _slotshow2 extends State<slotshow2> with WidgetsBindingObserver{
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                  children: <Widget>[
-                                   Text(snapshot.data.toString(), style: TextStyle(fontFamily: 'Roboto'),),
+                                   Text(snapshot.data.toString(), style: TextStyle(fontFamily: 'Roboto',fontSize: 17.0),),
                                   Align( alignment: Alignment.centerRight,
                                     child: IconButton(icon: Icon(Icons.cancel),
                                       color: Colors.red,
@@ -136,6 +135,7 @@ class _slotshow2 extends State<slotshow2> with WidgetsBindingObserver{
                                         if (doc[0]['Slot_no'] != null) {_isbe = true;}
                                         else{_isbe = false;}
 
+                                        // ignore: unnecessary_statements
                                         _isbe ? checkdata(): null;
                                       } ,),
                                   ),
