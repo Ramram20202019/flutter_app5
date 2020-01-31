@@ -33,3 +33,8 @@ Future<String> getslot() async {
 double getdist() {
   return 1000; // The value 1000 is in meters i.e. 1 KM
 }
+
+
+
+
+

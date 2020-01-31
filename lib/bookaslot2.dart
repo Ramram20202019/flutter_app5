@@ -320,10 +320,6 @@ class _bookaslot2 extends State<bookaslot2> with WidgetsBindingObserver {
 
 
 
-
-
-
-
   // ignore: missing_return, non_constant_identifier_names
   Widget myDetailsContainer1(String ParkName) {
     switch(ParkName) {
@@ -359,7 +355,7 @@ class _bookaslot2 extends State<bookaslot2> with WidgetsBindingObserver {
                     Container(
                       child: FutureBuilder<String>(
                           future: getslot(),
-                          initialData: "Please Wait Loading......",
+                          initialData: "Please Wait Loading.",
                           builder: (context, snapshot) {
                             return new Text(
                               snapshot.data.toString(), style: TextStyle(

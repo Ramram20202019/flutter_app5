@@ -1,5 +1,6 @@
 
 import 'package:flutter_app4/bookaslot2.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -75,8 +76,6 @@ class _slotshow2 extends State<slotshow2> with WidgetsBindingObserver{
 
 
 
-
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -126,6 +125,7 @@ class _slotshow2 extends State<slotshow2> with WidgetsBindingObserver{
                                     child: IconButton(icon: Icon(Icons.cancel),
                                       color: Colors.red,
                                       onPressed: () async{
+
                                         bool _isbe;
                                         QuerySnapshot querySnapshot = await Firestore.instance.collection(
                                             'ParkingDB')
@@ -158,6 +158,14 @@ class _slotshow2 extends State<slotshow2> with WidgetsBindingObserver{
   }
 
   Future<void> checkdata() async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: Text("Cancelling. Please Wait", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+            children: <Widget>[SpinKitThreeBounce(color: Colors.blue,),],
+          );
+        });
     QuerySnapshot querySnapshot = await Firestore.instance.collection(
         'ParkingDB')
         .where('Email', isEqualTo: '${widget.username}')

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flushbar/flushbar.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'main.dart';
 import 'slotshow2.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -71,7 +72,21 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
 
 
     void _add(i) async{
+         showDialog(
+          context: context,
+          builder: (BuildContext context) {
+        return SimpleDialog(
+          title: Text("Booking the Slot. Please Wait", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+          children: <Widget>[SpinKitPulse(color: Colors.blue,),],
+        );
+      });
 
+
+
+      /*AlertDialog(content: SpinKitChasingDots(
+          color: Colors.blue,
+          size: 50.0,
+        ), title: Text("Loading"));*/
 
       QuerySnapshot querySnapshot = await Firestore.instance.collection('ParkingDB').where('Email', isEqualTo: '${widget.username}').getDocuments();
       var doc = querySnapshot.documents;
@@ -165,8 +180,10 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
                     return Center(
                       child: Row(mainAxisAlignment: MainAxisAlignment.center,crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
-                        Text('Loading...', style: TextStyle(fontSize: 20.0, fontFamily: 'Roboto'),),
-                        CircularProgressIndicator(strokeWidth: 2.0,)
+                        SpinKitFadingCircle(
+                          color: Colors.blue,
+                          size: 50.0,
+                        )
 
                       ]),
                     );
@@ -174,6 +191,7 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
 
                     return ListView.separated(itemCount: snapshot.data.length,
                         itemBuilder: (context, index){
+
                           return ListTile (trailing: new RawMaterialButton(
                             onPressed: () {},
                             child: new Icon(
@@ -197,7 +215,12 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
                             ),
 
                             title: Text(snapshot.data[index].data['Slot_no']),
-                            onTap: (){_add(snapshot.data[index].data['Slot_no']);},
+                            onTap: (){_add(snapshot.data[index].data['Slot_no']);
+
+                            },
+
+
+
 
                           );
 

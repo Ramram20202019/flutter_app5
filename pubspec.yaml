@@ -35,6 +35,7 @@ dependencies:
   mdi: ^1.0.1
   flushbar: ^1.9.1
   rflutter_alert: ^1.0.3
+  flutter_spinkit: "^4.1.1"
 
 
   # The following adds the Cupertino Icons font to your application.
