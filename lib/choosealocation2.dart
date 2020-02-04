@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'bookaslot2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_app4/constants.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';

@@ -94,7 +94,7 @@ class _bookaslot2 extends State<bookaslot2> with WidgetsBindingObserver {
                   CircleAvatar(child: Icon(MdiIcons.account,size: 55.0,color: Colors.white,)),
                   decoration: BoxDecoration(
                     color: Colors.blue,
-                  ),
+                  ), accountName: null,
                 ),
                 ListTile(
                   title: Text('My Bookings'),
