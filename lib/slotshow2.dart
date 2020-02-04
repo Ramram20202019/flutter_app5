@@ -32,6 +32,7 @@ class _slotshow2 extends State<slotshow2> with WidgetsBindingObserver{
     WidgetsBinding.instance.addObserver(this);
   }
 
+
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
@@ -72,6 +73,7 @@ class _slotshow2 extends State<slotshow2> with WidgetsBindingObserver{
       String v = "No Bookings Yet";
       return v;
     }
+
   }
 
 
@@ -120,7 +122,7 @@ class _slotshow2 extends State<slotshow2> with WidgetsBindingObserver{
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                  children: <Widget>[
-                                   Text(snapshot.data.toString(), style: TextStyle(fontFamily: 'Roboto',fontSize: 17.0),),
+                                   Text(snapshot.data.toString(), style: TextStyle(fontFamily: 'Roboto',fontSize: 15.0),),
                                   Align( alignment: Alignment.centerRight,
                                     child: IconButton(icon: Icon(Icons.cancel),
                                       color: Colors.red,
@@ -153,8 +155,8 @@ class _slotshow2 extends State<slotshow2> with WidgetsBindingObserver{
 
             )
         )
-    );
 
+    );
   }
 
   Future<void> checkdata() async {

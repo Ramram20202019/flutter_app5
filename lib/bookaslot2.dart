@@ -31,13 +31,14 @@ class bookaslot2 extends StatefulWidget{
 class _bookaslot2 extends State<bookaslot2> with WidgetsBindingObserver {
 
   Location location = new Location();
+  var refreshKey = GlobalKey<RefreshIndicatorState>();
+
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
-
   @override
   void initState() {
     super.initState();
     _animateToUser();
+
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -46,6 +47,10 @@ class _bookaslot2 extends State<bookaslot2> with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
+
+
+
+
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -63,8 +68,10 @@ class _bookaslot2 extends State<bookaslot2> with WidgetsBindingObserver {
 
 
 
+
   @override
   Widget build(BuildContext context) {
+
     return WillPopScope(
       onWillPop: () async => false,
       child: MaterialApp(
@@ -108,6 +115,11 @@ class _bookaslot2 extends State<bookaslot2> with WidgetsBindingObserver {
             onPressed: ()  => _scaffoldKey.currentState.openDrawer()),
             title: Text('Choose a Location', textAlign: TextAlign.center,),
             actions: <Widget>[
+              Transform.scale(scale: 1.2,child: new IconButton(icon: Icon(Icons.refresh), onPressed: (){
+                setState(() {
+                  _animateToUser(); getslot();
+                });
+              })),
               Transform.scale(scale: 0.7 ,child: new IconButton(icon: Icon(MdiIcons.logout, color: Color(0xFFFFFFFF), size: 35.0,), onPressed: (){_signout(context);}))],
             backgroundColor: Colors.blue,
           ),
@@ -143,8 +155,6 @@ class _bookaslot2 extends State<bookaslot2> with WidgetsBindingObserver {
               target: LatLng(12.9864, 80.2425), zoom: 14),
           onMapCreated: (GoogleMapController controller) {
             _controller.complete(controller);
-
-
 
           },
 

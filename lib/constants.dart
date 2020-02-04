@@ -21,11 +21,14 @@ getslotP2() async {
 
 //Get total slots
 Future<String> getslot() async {
+
+
  QuerySnapshot q = await Firestore.instance.collection('ParkingDB').where('Slot_no', isGreaterThan: '').getDocuments();
  int t = 25;
  int s = 25 - q.documents.length;
  String v = s.toString() + '/' + t.toString();
  return v;
+
 }
 
 //Minimum distance for the user(with vehicle) to be present to book a slot
@@ -35,6 +38,16 @@ double getdist() {
 }
 
 
+
+Future getdataP1 () async {
+ QuerySnapshot q1 = await Firestore.instance.collection('Slots').document('Phase-1').collection('totslots').orderBy('Slot_no').getDocuments();
+ return q1.documents;
+}
+
+Future getdataP2 () async {
+ QuerySnapshot q1 = await Firestore.instance.collection('Slots').document('Phase-3').collection('totslots').orderBy('Slot_no').getDocuments();
+ return q1.documents;
+}
 
 
 
