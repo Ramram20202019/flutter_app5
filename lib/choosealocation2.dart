@@ -8,6 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'main.dart';
 import 'slotshow2.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -63,90 +64,99 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
   Widget build(BuildContext context) {
 
     void _add(i) async{
-         showDialog(
+      /*showDialog(
           context: context,
           builder: (BuildContext context) {
-        return SimpleDialog(
-          title: Text("Booking the Slot. Please Wait", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
-          children: <Widget>[SpinKitPulse(color: Colors.blue,),],
-        );
-      });
+            return SimpleDialog(
+              title: Text("Booking the Slot. Please Wait", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+              children: <Widget>[SpinKitPulse(color: Colors.blue,),],
+            );
+          });*/
+      Fluttertoast.showToast(
+          msg: "Booking the Slot.. Please Wait",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIos: 1,
+          backgroundColor: Colors.blue,
+          textColor: Colors.white,
+          fontSize: 20.0);
 
 
 
-
-     QuerySnapshot querySnapshot = await Firestore.instance.collection('ParkingDB').where('Email', isEqualTo: '${widget.username}').getDocuments();
+      QuerySnapshot querySnapshot = await Firestore.instance.collection('ParkingDB').where('Email', isEqualTo: '${widget.username}').getDocuments();
       var doc = querySnapshot.documents;
 
-        Future ret() async{
-          QuerySnapshot q = await Firestore.instance.collection('ParkingDB')
-              .where('Slot_no', isGreaterThan: '')
-              .getDocuments();
-          bool i1 = false;
-          var d = q.documents;
-          for (int j = 0; j < q.documents.length; j++) {
-            if(i.toString() == d[j]['Slot_no'].toString()){
-              i1 = true;
-            }
+      Future ret() async{
+        QuerySnapshot q = await Firestore.instance.collection('ParkingDB')
+            .where('Slot_no', isGreaterThan: '')
+            .getDocuments();
+        bool i1 = false;
+        var d = q.documents;
+        for (int j = 0; j < q.documents.length; j++) {
+          if(i.toString() == d[j]['Slot_no'].toString()){
+            i1 = true;
           }
-          return i1;
         }
+        return i1;
+      }
 
-        bool j = await ret();
-        if(j) {
-          Fluttertoast.showToast(
-              msg: "This Slot has already been booked. Please choose another slot",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
-              timeInSecForIos: 1,
-              backgroundColor: Colors.red,
-              textColor: Colors.white,
-              fontSize: 16.0);
+      bool j = await ret();
+      if(j) {
+        Fluttertoast.showToast(
+            msg: "This Slot has already been booked. Please choose another slot",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIos: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
 
-        }
+      }
 
-        else{
-          final DocumentReference documentReference =
-          Firestore.instance.collection("ParkingDB").document(
-              doc[0].documentID);
-          Map<String, String> data = <String, String>{
-            "Email": "${widget.username}",
-            "Slot_no": i,
+      else{
+        final DocumentReference documentReference =
+        Firestore.instance.collection("ParkingDB").document(
+            doc[0].documentID);
+        Map<String, String> data = <String, String>{
+          "Email": "${widget.username}",
+          "Slot_no": i,
 
-          };
-          documentReference.updateData(data).whenComplete(() {
-            print("Document Added");
-          }).catchError((e) => print(e));
+        };
+        documentReference.updateData(data).whenComplete(() {
+          print("Document Added");
+        }).catchError((e) => print(e));
 
-          if(i.toString().substring(0, 2) == 'P1') {
-            QuerySnapshot q2 = await Firestore.instance.collection('Slots').document('Phase-1').collection('totslots')
-                .where('Slot_no', isEqualTo: i)
-                .getDocuments();
-            var doc1 = q2.documents;
-
-            Firestore.instance.collection("Slots").document('Phase-1').collection('totslots').document(
-                doc1[0].documentID).delete();
-
-
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) =>
-                slotshow2(slotno: i, username: "${widget.username}",)));
-          }
-          else{QuerySnapshot q2 = await Firestore.instance.collection('Slots').document('Phase-3').collection('totslots')
+        if(i.toString().substring(0, 2) == 'P1') {
+          QuerySnapshot q2 = await Firestore.instance.collection('Slots').document('Phase-1').collection('totslots')
               .where('Slot_no', isEqualTo: i)
               .getDocuments();
           var doc1 = q2.documents;
 
-          Firestore.instance.collection("Slots").document('Phase-3').collection('totslots').document(
+          Firestore.instance.collection("Slots").document('Phase-1').collection('totslots').document(
               doc1[0].documentID).delete();
 
+          Fluttertoast.cancel();
 
           Navigator.push(
               context, MaterialPageRoute(builder: (context) =>
-              slotshow2(slotno: i, username: "${widget.username}",)));}
-
-
+              slotshow2(slotno: i, username: "${widget.username}",)));
         }
+        else{QuerySnapshot q2 = await Firestore.instance.collection('Slots').document('Phase-3').collection('totslots')
+            .where('Slot_no', isEqualTo: i)
+            .getDocuments();
+        var doc1 = q2.documents;
+
+        Firestore.instance.collection("Slots").document('Phase-3').collection('totslots').document(
+            doc1[0].documentID).delete();
+
+        Fluttertoast.cancel();
+
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) =>
+            slotshow2(slotno: i, username: "${widget.username}",)));}
+
+
+      }
 
 
 
@@ -160,69 +170,73 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
 
               child: Scaffold(
                 body:  new RefreshIndicator(
-                  key: refreshKey,
-                  child: FutureBuilder(future: getdataP1(), builder: (context, snapshot){
+                    key: refreshKey,
+                    child: FutureBuilder(future: getdataP1(), builder: (context, snapshot){
 
-                    if(snapshot.connectionState == ConnectionState.waiting || snapshot.hasData == null){
-                      return Center(
-                        child: Row(mainAxisAlignment: MainAxisAlignment.center,crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                          SpinKitFadingCircle(
-                            color: Colors.blue,
-                            size: 50.0,
-                          )
-
-                        ]),
-                      );
-                    }else{
-
-                      return ListView.separated(itemCount: snapshot.data.length,
-                          itemBuilder: (context, index){
-
-                            return ListTile (trailing: new RawMaterialButton(
-                              onPressed: () {},
-                              child: new Icon(
-                                Icons.local_parking,
-                                color: Colors.green,
-                                size: 45.0,
-                              ),
-
-                            ),
-                              leading: new RawMaterialButton(
-                                onPressed: () {},
-                                child: new Icon(
-                                  MdiIcons.car,
+                      if(snapshot.connectionState == ConnectionState.waiting || snapshot.hasData == null){
+                        return Center(
+                          child: Row(mainAxisAlignment: MainAxisAlignment.center,crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                SpinKitFadingCircle(
                                   color: Colors.blue,
-                                  size: 45.0,
+                                  size: 50.0,
+                                )
+
+                              ]),
+                        );
+                      }else{
+
+                        return ListView.separated(itemCount: snapshot.data.length,
+                            itemBuilder: (context, index){
+
+                              return ListTile (trailing: new RaisedButton(
+                                color: Colors.green,
+                                onPressed: () {
+                                  _add(snapshot.data[index].data['Slot_no']);
+                                },
+                                //
+                                child: Text(
+                                  'BOOK NOW',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontFamily: 'Roboto'),
                                 ),
-                                shape: new CircleBorder(),
-                                elevation: 2.0,
-                                fillColor: Colors.white,
-                                padding: const EdgeInsets.all(5.0),
+                                splashColor: Colors.grey,
                               ),
+                                leading: new RawMaterialButton(
+                                  onPressed: () {},
+                                  child: new Icon(
+                                    MdiIcons.car,
+                                    color: Colors.blue,
+                                    size: 45.0,
+                                  ),
+                                  shape: new CircleBorder(),
+                                  elevation: 2.0,
+                                  fillColor: Colors.white,
+                                  padding: const EdgeInsets.all(5.0),
+                                ),
 
-                              title: Text(snapshot.data[index].data['Slot_no']),
-                              onTap: (){_add(snapshot.data[index].data['Slot_no']);
-                              },
-                            );
+                                title: Text(snapshot.data[index].data['Slot_no']),
+                              );
 
-                          },
-                          separatorBuilder: (context, index) {
-                            return Divider();
-                          }
-                      );
+                            },
+                            separatorBuilder: (context, index) {
+                              return Divider();
+                            }
+                        );
 
-                    }
+                      }
 
-                  },),
+                    },),
 
-                  onRefresh: () async{
-                    refreshKey.currentState?.show(atTop: false);
-                    await new Future.delayed(new Duration(seconds: 3));
-                    setState(() {
-                    getdataP1();getdataP2();
-                  });
-                  return null;}
+                    onRefresh: () async{
+                      refreshKey.currentState?.show(atTop: false);
+                      await new Future.delayed(new Duration(seconds: 3));
+                      setState(() {
+                        getdataP1();getdataP2();
+                      });
+                      return null;}
                 ),
               )
           )
@@ -249,14 +263,20 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
 
                       return ListView.separated(itemCount: snapshot.data.length,
                           itemBuilder: (context, index){
-                            return ListTile (trailing: new RawMaterialButton(
-                              onPressed: () {},
-                              child: new Icon(
-                                Icons.local_parking,
-                                color: Colors.green,
-                                size: 45.0,
+                            return ListTile (trailing: new RaisedButton(
+                              color: Colors.green,
+                              onPressed: () {
+                                _add(snapshot.data[index].data['Slot_no']);
+                              },
+                              //
+                              child: Text(
+                                'BOOK NOW',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontFamily: 'Roboto'),
                               ),
-
+                              splashColor: Colors.grey,
                             ),
                               leading: new RawMaterialButton(
                                 onPressed: () {},
@@ -272,7 +292,6 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
                               ),
 
                               title: Text(snapshot.data[index].data['Slot_no']),
-                              onTap: (){_add(snapshot.data[index].data['Slot_no']);},
 
                             );
 
@@ -320,30 +339,30 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
           elevation: 0.7,
           backgroundColor: Colors.blue,
           bottom: TabBar(
-            tabs: <Widget>[
-              Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,children: <Widget>[
-                Tab(
-                  text: 'PHASE-1\t\t',
-                ),
-                        FutureBuilder(future: getslotP1(), builder: (context, snapshot){
+              tabs: <Widget>[
+                Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,children: <Widget>[
+                  Tab(
+                    text: 'PHASE-1\t\t',
+                  ),
+                  FutureBuilder(future: getslotP1(), builder: (context, snapshot){
 
-                              if(snapshot.connectionState == ConnectionState.waiting || snapshot.hasData == null){
-                                return CircularProgressIndicator();
-                              }
-                              else{return Text('('+snapshot.data.toString()+')', style: TextStyle(fontWeight: FontWeight.bold, color:Colors.black ),);}
-                                  }),],),
-             Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,children: <Widget>[ Tab(
-                text: 'PHASE-3\t\t',
-              ),FutureBuilder(future: getslotP2(), builder: (context, snapshot){
+                    if(snapshot.connectionState == ConnectionState.waiting || snapshot.hasData == null){
+                      return CircularProgressIndicator();
+                    }
+                    else{return Text('('+snapshot.data.toString()+')', style: TextStyle(fontWeight: FontWeight.bold, color:Colors.black ),);}
+                  }),],),
+                Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center,children: <Widget>[ Tab(
+                  text: 'PHASE-3\t\t',
+                ),FutureBuilder(future: getslotP2(), builder: (context, snapshot){
 
-                if(snapshot.connectionState == ConnectionState.waiting || snapshot.hasData == null){
-                  return CircularProgressIndicator();
-                }
-                else{return Text('('+snapshot.data.toString()+')', style: TextStyle(fontWeight: FontWeight.bold, color:Colors.black ),);}
-              })
+                  if(snapshot.connectionState == ConnectionState.waiting || snapshot.hasData == null){
+                    return CircularProgressIndicator();
+                  }
+                  else{return Text('('+snapshot.data.toString()+')', style: TextStyle(fontWeight: FontWeight.bold, color:Colors.black ),);}
+                })
 
-             ],)
-         ]),
+                ],)
+              ]),
         ),
         body: TabBarView(
           children: containers,
@@ -356,13 +375,17 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
       context: context,
       type: AlertType.warning,
       title: "Are you sure you want to Logout? ",
+      style: AlertStyle(
+        animationType: AnimationType.grow,
+        isCloseButton: false,
+      ),
       buttons: [
         DialogButton(
           child: Text(
             "NO",
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
           width: 120,
         ),
         DialogButton(
@@ -371,11 +394,11 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
           onPressed: () async{
+            Navigator.of(context, rootNavigator: true).pop();
             try {
               await FirebaseAuth.instance.signOut();
-
-
-
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              prefs.remove('email');
               Navigator.of(context).popUntil((route) => route.isFirst);
               Navigator.pushReplacement(
                   context, MaterialPageRoute(
@@ -418,6 +441,4 @@ class _choosealocation2state extends State<choosealocation2> with TickerProvider
 
 
 }
-
-
 

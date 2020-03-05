@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:async';
 import 'package:flushbar/flushbar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'bookaslot2.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -13,7 +14,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 
-void main() => runApp(MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  var email = prefs.getString('email');
+  print(email);
+  runApp(MaterialApp(home: email == null ? MyApp() : bookaslot2(username: email,)));
+}
 
 class MyApp extends StatelessWidget{
   @override
@@ -48,42 +55,88 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
     );
     final FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
 
-     _scaffoldKey.currentState.showSnackBar(
-        new SnackBar(duration: new Duration(seconds: 4), content:
-        new Row(
-          children: <Widget>[
-            new CircularProgressIndicator(),
-            new Text("  Signing-In...")
-          ],
-        ),
-        ));
-    try {
-      Future<bool> ret() async {
-        QuerySnapshot q = await Firestore.instance.collection('ParkingDB')
-            .where('Email', isGreaterThan: '')
-            .getDocuments();
-        bool i1 = false;
-        var d = q.documents;
-        for (int j = 0; j < q.documents.length; j++) {
-          if (user.email == d[j]['Email'].toString()) {
-            i1 = true;
-          }
+    Future<bool> ret1() async {
+      QuerySnapshot g = await Firestore.instance.collection('Gmailuserlist')
+          .where('Email', isGreaterThan: '')
+          .getDocuments();
+      bool i1 = false;
+      var d = g.documents;
+      for (int j = 0; j < g.documents.length; j++) {
+        if (user.email == d[j]['Email'].toString()) {
+          i1 = true;
         }
-        return i1;
       }
+      return i1;
+    }
 
-      bool j = await ret();
-      if (!j) {
-        Firestore.instance.collection("ParkingDB").document().setData(
-            {'Email': user.email});
-        print('User added to the database');
+    bool gmailcheck = await ret1();
+
+    if(gmailcheck == true) {
+      _scaffoldKey.currentState.showSnackBar(
+          new SnackBar(duration: new Duration(seconds: 4), content:
+          new Row(
+            children: <Widget>[
+              new CircularProgressIndicator(),
+              new Text("  Signing-In...")
+            ],
+          ),
+          ));
+      try {
+        Future<bool> ret() async {
+          QuerySnapshot q = await Firestore.instance.collection('ParkingDB')
+              .where('Email', isGreaterThan: '')
+              .getDocuments();
+          bool i1 = false;
+          var d = q.documents;
+          for (int j = 0; j < q.documents.length; j++) {
+            if (user.email == d[j]['Email'].toString()) {
+              i1 = true;
+            }
+          }
+          return i1;
+        }
+
+        bool j = await ret();
+        if (!j) {
+          Firestore.instance.collection("ParkingDB").document().setData(
+              {'Email': user.email});
+          print('User added to the database');
+        }
+        if (user != null) {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setString('email', user.email);
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) => bookaslot2(username: user.email,)));
+        }
+      } catch (e) {
+        print(e);
       }
-      if(user != null){
-      Navigator.push(context, MaterialPageRoute(
-          builder: (context) => bookaslot2(username: user.email,)));}
-    }catch(e){print(e);}
-    return user;
+      return user;
+    }
 
+    else{
+      Flushbar(
+        padding: EdgeInsets.all(10),
+        borderRadius: 8,
+        backgroundColor: Colors.blue,
+        boxShadows: [
+          BoxShadow(
+            color: Colors.black45,
+            offset: Offset(3, 3),
+            blurRadius: 3,
+          ),
+        ],
+        duration: new Duration(seconds: 4),
+        dismissDirection: FlushbarDismissDirection.HORIZONTAL,
+        leftBarIndicatorColor: Colors.red,
+        forwardAnimationCurve: Curves.easeInOutCubic,
+        title: "Sorry! Invalid Access",
+        message: "Your Gmail is not authorized to login",
+        flushbarPosition: FlushbarPosition.TOP,
+        icon: Icon(Icons.warning, color: Colors.red,),
+
+      ).show(context);
+    }
   }
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -333,7 +386,7 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _scaffoldKey,
+      key: _scaffoldKey,
       body: Form(
         key: _formKey,
         child: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -465,7 +518,7 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
               icon: Icon(Icons.network_check, color: Colors.red,),
 
             ).show(context);
-           break;
+            break;
           default:
             Flushbar(
               padding: EdgeInsets.all(10),
@@ -488,7 +541,7 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
               icon: Icon(Icons.warning, color: Colors.red,),
 
             ).show(context);
-          }
+        }
         print(e.message);
       }
 
@@ -504,28 +557,21 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
 /*class Page2 extends StatefulWidget{
   String username;
   Page2({Key key, this.username}) : super (key: key);
-
   @override
   _Page2state createState() => _Page2state();
 }*/
 
 /*class _Page2state extends State<Page2> {
-
-
-
-
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(backgroundColor: Color(0xFFFF9861),
         appBar: AppBar(
           backgroundColor: Color(0xFFFF9861),
-
           automaticallyImplyLeading: false,
           actions: <Widget>[
             new IconButton(icon: Icon(MdiIcons.logout, color: Color(0xFFFFFFFF), size: 35.0,), onPressed: (){_signout(context);})
           ],
-
         ),
         body: ListView(
             children: <Widget>[
@@ -547,13 +593,11 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
                               fontFamily: 'Pacifico',
                               color: Colors.black,
                               fontSize: 25.0
-
                           ))
                     ],
                   ),
                 ]),
               ),
-
               SizedBox(height: 40.0),
               Container(
                   padding: EdgeInsets.only(left: 20.0, right: 5.0),
@@ -571,9 +615,7 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
                             blurRadius: 25.0
                         )
                       ]
-
                   ),
-
                   child: Padding(
                       padding: EdgeInsets.only(
                           left: 1.0, right: 1.0, top: 16.0),
@@ -597,7 +639,6 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
                                 },
                                 textColor: Colors.white,
                                 splashColor: Colors.grey,
-
                                 padding: const EdgeInsets.all(0.0),
                                 child: Container(
                                   width: 250.0,
@@ -622,7 +663,6 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
                             RaisedButton(
                                 onPressed: () {
                                   checkuser();
-
                                 },
                                 textColor: Colors.white,
                                 splashColor: Colors.grey,
@@ -653,12 +693,9 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
               )
             ]
         )
-
     );
   }
-
   Future<void> checkuser() async {
-
     QuerySnapshot querySnapshot = await Firestore.instance.collection(
         'ParkingDB')
         .where('Email', isEqualTo: '${widget.username}')
@@ -666,8 +703,6 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
     var doc = querySnapshot.documents;
     print(doc[0].documentID);
     print(doc[0]['Slot_no']);
-
-
     if (doc[0]['Slot_no'] != null) {
       print('Inside if');
       Fluttertoast.showToast(
@@ -682,18 +717,14 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
           context, MaterialPageRoute(builder: (context) =>
           slotshow(username: doc[0]['Email'],)));
     }
-
     else{
       Navigator.push(
           context, MaterialPageRoute(
           builder: (context) => bookaslot(username: '${widget.username}',)));
     }
   }
-
    _signout(context) async {
-
      Alert(
-
        context: context,
        type: AlertType.warning,
        title: "Are you sure you want to Logout?",
@@ -713,7 +744,6 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
            ),
            onPressed: () async{
                try {
-
                  Navigator.of(context).popUntil((route) => route.isFirst);
                  Navigator.pushReplacement(
                      context, MaterialPageRoute(
@@ -736,32 +766,18 @@ class _Myhomepagestate extends State<MyHomePage> with WidgetsBindingObserver{
                    message: " ",
                    flushbarPosition: FlushbarPosition.TOP,
                    icon: Icon(Icons.thumb_up, color: Colors.white,),
-
                  ).show(context);
-
-
                }
                catch (e) {
                  print(e.message);
                }
-
            },
            width: 120,
          ),
        ],
      ).show();
-
-
    }
 }*/
-
-
-
-
-
-
-
-
 
 
 

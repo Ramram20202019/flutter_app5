@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
 import 'package:flushbar/flushbar.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'constants.dart';
 import 'main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -67,8 +69,6 @@ class _bookaslot2 extends State<bookaslot2> with WidgetsBindingObserver {
   Completer<GoogleMapController> _controller = Completer();
 
 
-
-
   @override
   Widget build(BuildContext context) {
 
@@ -110,9 +110,9 @@ class _bookaslot2 extends State<bookaslot2> with WidgetsBindingObserver {
 
           appBar: AppBar(leading:
           IconButton(
-            icon: Icon(Icons.menu),
+              icon: Icon(Icons.menu),
 
-            onPressed: ()  => _scaffoldKey.currentState.openDrawer()),
+              onPressed: ()  => _scaffoldKey.currentState.openDrawer()),
             title: Text('Choose a Location', textAlign: TextAlign.center,),
             actions: <Widget>[
               Transform.scale(scale: 1.2,child: new IconButton(icon: Icon(Icons.refresh), onPressed: (){
@@ -225,6 +225,14 @@ class _bookaslot2 extends State<bookaslot2> with WidgetsBindingObserver {
   Widget _boxes(String _image, double lat, double long, String ParkName) {
     return GestureDetector(
       onTap: () async {
+        Fluttertoast.showToast(
+            msg: "Loading.. Please Wait",
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIos: 1,
+            backgroundColor: Colors.blue,
+            textColor: Colors.white,
+            fontSize: 20.0);
         switch(ParkName) {
           case 'Ascendas IT Park, Taramani':
             var pos = await location.getLocation();
@@ -232,45 +240,56 @@ class _bookaslot2 extends State<bookaslot2> with WidgetsBindingObserver {
             QuerySnapshot querySnapshot = await Firestore.instance.collection('ParkingDB').where('Email', isEqualTo: '${widget.username}').getDocuments();
             var doc = querySnapshot.documents;
             if(doc[0]['Slot_no'] != null) {
+              Fluttertoast.cancel();
               Alert(context: context,
-                title: "You already have a booked slot\t" + doc[0]['Slot_no'],
-                type: AlertType.error,
+                  title: "You already have a booked slot\t" + doc[0]['Slot_no'],
+                  type: AlertType.error,
+                  style: AlertStyle(
+                    animationType: AnimationType.grow,
+                    isCloseButton: false,
+                  ),
                   buttons: [
                     DialogButton(
                       child: Text(
                         "OK",
                         style: TextStyle(color: Colors.white, fontSize: 20),
                       ),
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
                       width: 120,
                     ),
 
                   ]
-                 ).show();
+              ).show();
             }
             else {
+              Fluttertoast.cancel();
               if(gcd.sphericalLawOfCosinesDistance() <= getdist()){
                 Navigator.push(
                     context, MaterialPageRoute(builder: (context) =>
                     choosealocation2(username: '${widget.username}',)));}
 
-              else{Alert(context: context,
-              title: "Cannot book a slot, if you are more than 1 KM from the parking location",
-              type: AlertType.error,
+              else{ Fluttertoast.cancel();
+              Alert(context: context,
+                  title: "Cannot book a slot, if you are more than 1 KM from the parking location",
+                  type: AlertType.error,
+                  style: AlertStyle(
+                    animationType: AnimationType.grow,
+                    isCloseButton: false,
+                  ),
                   buttons: [
                     DialogButton(
                       child: Text(
                         "OK",
                         style: TextStyle(color: Colors.white, fontSize: 20),
                       ),
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
                       width: 120,
                     ),
 
                   ]
 
               ).show();}
-              }
+            }
 
         }
 
@@ -417,13 +436,17 @@ class _bookaslot2 extends State<bookaslot2> with WidgetsBindingObserver {
       context: context,
       type: AlertType.warning,
       title: "Are you sure you want to Logout? ",
+      style: AlertStyle(
+        animationType: AnimationType.grow,
+        isCloseButton: false,
+      ),
       buttons: [
         DialogButton(
           child: Text(
             "NO",
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
           width: 120,
         ),
         DialogButton(
@@ -432,8 +455,11 @@ class _bookaslot2 extends State<bookaslot2> with WidgetsBindingObserver {
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
           onPressed: () async{
+            Navigator.of(context, rootNavigator: true).pop();
             try {
               await FirebaseAuth.instance.signOut();
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              prefs.remove('email');
               Navigator.of(context).popUntil((route) => route.isFirst);
               Navigator.pushReplacement(
                   context, MaterialPageRoute(
@@ -473,8 +499,5 @@ class _bookaslot2 extends State<bookaslot2> with WidgetsBindingObserver {
   }
 
 
+
 }
-
-
-
-
